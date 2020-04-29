@@ -10,5 +10,6 @@ public class DocumentsMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_documents_main);
+        this.setTitle(R.string.docs);
     }
 }
