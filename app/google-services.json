@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "814969818044",
+    "firebase_url": "https://cloudfile-ae3a9.firebaseio.com",
+    "project_id": "cloudfile-ae3a9",
+    "storage_bucket": "cloudfile-ae3a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814969818044:android:2470dedc97cfa1117db9b9",
+        "android_client_info": {
+          "package_name": "com.escoladeltreball.cloudfile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814969818044-i6rur7m39oo8uutosrvo6d71gs1dmg01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj2WQ1NctOxzxUY82RWBzc6BCJsf9L_98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814969818044-i6rur7m39oo8uutosrvo6d71gs1dmg01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
