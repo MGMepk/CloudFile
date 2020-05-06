@@ -4,4 +4,5 @@
     <string name="docs">Documentos</string>
     <string name="audio">Audio</string>
     <string name="choose_audio_file">Choose audio File</string>
+    <string name="upload">Upload</string>
 </resources>

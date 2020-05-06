@@ -12,4 +12,13 @@ public class DocumentsMain extends AppCompatActivity {
         setContentView(R.layout.activity_documents_main);
         this.setTitle(R.string.docs);
     }
+
+    /*
+      private void openAudioChooser() {
+        Intent intent = new Intent();
+        intent.setType("text/* application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_AUDIO_REQUEST);
+    }
+    */
 }

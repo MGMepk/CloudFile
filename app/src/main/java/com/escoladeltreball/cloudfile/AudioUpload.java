@@ -16,27 +16,27 @@ public class AudioUpload {
         this.mAudioUrl = audioUrl;
     }
 
-    public String getaName() {
+    public String getName() {
         return aName;
     }
 
-    public void setaName(String aName) {
+    public void setName(String aName) {
         this.aName = aName;
     }
 
-    public String getmAudioUrl() {
+    public String getAudioUrl() {
         return mAudioUrl;
     }
 
-    public void setmAudioUrl(String mAudioUrl) {
+    public void setAudioUrl(String mAudioUrl) {
         this.mAudioUrl = mAudioUrl;
     }
 
-    public String getmKey() {
+    public String getKey() {
         return mKey;
     }
 
-    public void setmKey(String mKey) {
+    public void setKey(String mKey) {
         this.mKey = mKey;
     }
 }

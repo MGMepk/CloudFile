@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/audio_file_name"
         android:layout_centerHorizontal="true"
-        android:text="Upload" />
+        android:text="@string/upload" />
 
     <TextView
         android:id="@+id/show_audio_files"
