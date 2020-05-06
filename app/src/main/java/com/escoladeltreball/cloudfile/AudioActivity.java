@@ -44,7 +44,7 @@ public class AudioActivity extends AppCompatActivity {
         mProgressCircle = findViewById(R.id.progress_circle);
 
         mUploads = new ArrayList<>();
-        mAdapter = new AudioAdapter(AudioActivity.this, mUploads);
+       // mAdapter = new AudioAdapter(AudioActivity.this, mUploads);
 
         mStorage = FirebaseStorage.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/audio");
