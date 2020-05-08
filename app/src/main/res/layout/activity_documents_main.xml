@@ -3,6 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".DocumentsMain">
+
+    <Button
+        android:id="@+id/button_choose_doc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_audio_file" />
+
+    <EditText
+        android:id="@+id/document_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:inputType="text"
+        tools:ignore="LabelFor" />
+
+    <Button
+        android:id="@+id/upload_doc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/document_name"
+        android:layout_centerHorizontal="true"
+        android:text="@string/upload" />
+
+    <TextView
+        android:id="@+id/show_doc_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/document_name"
+        android:layout_toLeftOf="@id/upload_doc"
+        android:text="Show Uploads" />
 
 </RelativeLayout>

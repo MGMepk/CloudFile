@@ -62,7 +62,7 @@ public class AudioMain extends AppCompatActivity {
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openAudioActivity();
             }
         });
 
@@ -89,6 +89,11 @@ public class AudioMain extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
 
+    }
+
+    private void openAudioActivity() {
+        Intent intent = new Intent(this, AudioActivity.class);
+        startActivity(intent);
     }
 
 }

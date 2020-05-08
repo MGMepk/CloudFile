@@ -5,4 +5,7 @@
     <string name="audio">Audio</string>
     <string name="choose_audio_file">Choose audio File</string>
     <string name="upload">Upload</string>
+    <string name="documentos">Documentos</string>
+    <string name="video">Video</string>
+    <string name="imagenes">Imagenes</string>
 </resources>

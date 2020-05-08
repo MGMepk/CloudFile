@@ -32,18 +32,16 @@
                 android:id="@+id/button_images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/ic_camera_alt_black_24dp"
-                android:contentDescription="Imagenes"
+                android:contentDescription="@string/imagenes"
                 android:gravity="center_horizontal" />
 
             <ImageButton
                 android:id="@+id/button_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/ic_queue_music_black_24dp"
-                android:contentDescription="Audio"
+                android:contentDescription="@string/audio"
                 android:gravity="center_horizontal" />
 
         </LinearLayout>
@@ -56,18 +54,16 @@
                 android:id="@+id/button_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/videocam"
-                android:contentDescription="Video"
+                android:contentDescription="@string/video"
                 android:gravity="center_horizontal" />
 
             <ImageButton
                 android:id="@+id/button_documents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/document"
-                android:contentDescription="Documentos"
+                android:contentDescription="@string/documentos"
                 android:gravity="center_horizontal" />
         </LinearLayout>
 
