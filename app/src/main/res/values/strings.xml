@@ -8,4 +8,6 @@
     <string name="documentos">Documentos</string>
     <string name="video">Video</string>
     <string name="imagenes">Imagenes</string>
+    <string name="show_uploads">Show Uploads</string>
+    <string name="grabar">Grabar</string>
 </resources>

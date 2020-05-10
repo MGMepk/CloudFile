@@ -20,11 +20,35 @@
         android:inputType="text"
         tools:ignore="LabelFor" />
 
+    <TextView
+        android:id="@+id/info_audio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progress_bar"
+        android:layout_below="@id/audio_file_name"
+        android:layout_marginTop="16dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/upload_audio"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/grabar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/grabar" />
+
     <Button
         android:id="@+id/upload_audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/audio_file_name"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="@string/upload" />
 
@@ -32,9 +56,12 @@
         android:id="@+id/show_audio_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/audio_file_name"
-        android:layout_toLeftOf="@id/upload_audio"
-        android:text="Show Uploads" />
+        android:layout_alignBaseline="@+id/upload_audio"
+        android:layout_alignBottom="@id/upload_audio"
+        android:layout_marginStart="25dp"
+        android:layout_toEndOf="@id/upload_audio"
+        android:gravity="center"
+        android:text="@string/show_uploads" />
 
 
 </RelativeLayout>

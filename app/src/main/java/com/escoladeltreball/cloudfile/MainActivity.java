@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         iButtonImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // intent imageActivity
             }
         });
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         iButtonVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // intent videoActivity
             }
         });
 
