@@ -1,5 +1,6 @@
 package com.escoladeltreball.cloudfile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,13 +22,18 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +50,9 @@ public class AudioMain extends AppCompatActivity {
     private Button grabar;
     private EditText audioName;
     private TextView txtInfo;
+
+    private ProgressBar mProgressBar;
+
     private TextView show;
 
     private Uri audioUri;
@@ -67,7 +77,7 @@ public class AudioMain extends AppCompatActivity {
         grabar = findViewById(R.id.grabar);
         show = findViewById(R.id.show_audio_files);
         txtInfo = findViewById(R.id.info_audio);
-
+        mProgressBar = findViewById(R.id.progress_bar);
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads/audio");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/audio");
 
@@ -81,7 +91,7 @@ public class AudioMain extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                uploadFile();
             }
         });
 
@@ -115,7 +125,7 @@ public class AudioMain extends AppCompatActivity {
         if (estat.equals(Environment.MEDIA_MOUNTED)) {
             txtInfo.setText("");
 
-            Log.d(TAG, "media mounted" + ", " + String.valueOf(sampleDir));
+            Log.d(TAG, "media mounted" + ", " + sampleDir);
 
             int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -145,21 +155,17 @@ public class AudioMain extends AppCompatActivity {
                 }
 
             } else {
-                Log.d(TAG, "entra, té permissos:" + ", " + String.valueOf(permCheck));
+                Log.d(TAG, "entra, té permissos:" + ", " + permCheck);
                 try {
                     if (!soundDir.exists()) {
                         soundDir.mkdirs();
                     }
                     audiofile = File.createTempFile("sound", ".3gp", soundDir);
                     recorder = new MediaRecorder();
-
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                     recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
                     recorder.setOutputFile(audiofile.getAbsolutePath());
-
                     Log.d(TAG, "startRecording: " + audiofile.getAbsolutePath());
                     recorder.prepare();
                     recorder.start();
@@ -169,12 +175,12 @@ public class AudioMain extends AppCompatActivity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "sd card error: " + String.valueOf(sampleDir) + e.getMessage() + e.getCause());
+                    Log.d(TAG, "sd card error: " + sampleDir + e.getMessage() + e.getCause());
 
                 } catch (Exception e) {
                     Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
                     Toast.makeText(this, "Exception: missatge: " + e.getMessage() + ", causa: " + e.getCause() + ", " +
-                            String.valueOf(audiofile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+                            audiofile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -188,7 +194,7 @@ public class AudioMain extends AppCompatActivity {
         try {
             recorder.stop();
             recorder.release();
-            llista.add(audiofile.getAbsolutePath());
+            txtInfo.setText(audiofile.getAbsolutePath());
             addRecordingToMediaLibrary();
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -202,7 +208,6 @@ public class AudioMain extends AppCompatActivity {
         Toast.makeText(this, "Stop Recording", Toast.LENGTH_SHORT).show();
     }
 
-
     protected void addRecordingToMediaLibrary() {
         try {
             ContentValues values = new ContentValues(4);
@@ -214,17 +219,16 @@ public class AudioMain extends AppCompatActivity {
             ContentResolver contentResolver = getContentResolver();
 
             Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            Uri newUri = contentResolver.insert(base, values);
+            audioUri = contentResolver.insert(base, values);
 
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-            Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
-
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, audioUri));
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "addRecordingToMediaLibrary: " + e.getCause() + ", " + e.getMessage() + ", ");
             Toast.makeText(this, e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void openAudioChooser() {
         Intent intent = new Intent();
@@ -239,6 +243,7 @@ public class AudioMain extends AppCompatActivity {
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
             audioUri = data.getData();
+            txtInfo.setText(audioUri.getPath());
         }
     }
 
@@ -247,6 +252,52 @@ public class AudioMain extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
+
+    private void uploadFile() {
+        if (audioUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(audioUri));
+
+            fileReference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setProgress(0);
+                        }
+                    }, 500);
+
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            AudioUpload upload = new AudioUpload(audioName.getText().toString().trim(),
+                                    uri.toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                        }
+                    });
+
+                    Toast.makeText(AudioMain.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(AudioMain.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                    mProgressBar.setProgress((int) progress);
+                }
+            });
+        } else {
+            Toast.makeText(this, "no file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void openAudioActivity() {
         Intent intent = new Intent(this, AudioActivity.class);

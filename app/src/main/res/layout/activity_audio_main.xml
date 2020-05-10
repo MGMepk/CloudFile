@@ -16,6 +16,7 @@
         android:id="@+id/audio_file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/button_choose_audio"
         android:autofillHints=""
         android:inputType="text"
         tools:ignore="LabelFor" />
@@ -26,7 +27,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/progress_bar"
         android:layout_below="@id/audio_file_name"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="15dp" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
