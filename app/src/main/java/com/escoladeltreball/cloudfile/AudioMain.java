@@ -66,7 +66,6 @@ public class AudioMain extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     File sampleDir = Environment.getExternalStorageDirectory();
     File soundDir = new File(sampleDir, "Sons_Grabacio");
-    List<String> llista = new ArrayList<String>();
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
 
@@ -196,7 +195,6 @@ public class AudioMain extends AppCompatActivity {
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                     recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                     recorder.setOutputFile(audiofile.getAbsolutePath());
-                    Log.d(TAG, "startRecording: " + audiofile.getAbsolutePath());
                     recorder.prepare();
                     recorder.start();
                 } catch (IllegalStateException e) {

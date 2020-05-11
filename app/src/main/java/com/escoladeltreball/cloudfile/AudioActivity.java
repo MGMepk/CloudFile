@@ -12,15 +12,18 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,12 +107,30 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onDownloadClick(int position) {
-        String url = mUploads.get(position).getAudioUrl();
+        AudioUpload selectedItem = mUploads.get(position);
+        String url = selectedItem.getAudioUrl();
+        String name = selectedItem.getName();
         StorageReference audioRef = mStorage.getReferenceFromUrl(url);
         audioRef.getDownloadUrl();
 
-        //Toast.makeText(AudioActivity.this, "No implementado: " + audioRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
-        //Toast.makeText(AudioActivity.this, "No implementado", Toast.LENGTH_SHORT).show();
+        try {
+            File localFile = File.createTempFile("audios", "mp3");
+            audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(AudioActivity.this, "No implementado: " + audioRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
