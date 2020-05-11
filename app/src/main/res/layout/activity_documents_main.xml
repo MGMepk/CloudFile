@@ -10,17 +10,19 @@
         android:id="@+id/button_choose_doc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/choose_audio_file" />
+        android:text="@string/choose_document" />
 
     <EditText
         android:id="@+id/document_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/button_choose_doc"
         android:autofillHints=""
         android:inputType="text"
         tools:ignore="LabelFor" />
 
     <TextView
+        android:id="@+id/document_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/progress_bar"

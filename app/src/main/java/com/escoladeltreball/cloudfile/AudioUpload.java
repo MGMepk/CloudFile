@@ -8,7 +8,7 @@ public class AudioUpload {
     public AudioUpload() {
     }
 
-    public AudioUpload(String name, String audioUrl) {
+    AudioUpload(String name, String audioUrl) {
         if (name.trim().equals("")) {
             name = "No Name";
         }

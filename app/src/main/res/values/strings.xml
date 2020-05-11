@@ -12,4 +12,5 @@
     <string name="name">Nombre</string>
     <string name="grabar">Grabar</string>
     <string name="sampleurl">sampleUrl</string>
+    <string name="choose_document">Choose Document</string>
 </resources>

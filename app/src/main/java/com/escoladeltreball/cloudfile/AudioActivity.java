@@ -28,9 +28,7 @@ import java.util.List;
 public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnItemClickListener {
     private RecyclerView mRecyclerView;
     private AudioAdapter mAdapter;
-    MediaPlayer myMediaPlayer;
     public MediaPlayer mediaPlayer;
-    boolean mpReady;
     private ProgressBar mProgressCircle;
 
     private FirebaseStorage mStorage;
@@ -49,7 +47,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressCircle = findViewById(R.id.progress_circle);
-
+        mediaPlayer = new MediaPlayer();
         mUploads = new ArrayList<>();
         mAdapter = new AudioAdapter(AudioActivity.this, mUploads);
         mRecyclerView.setAdapter(mAdapter);
@@ -88,41 +86,30 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onItemClick(int position) {
-        AudioUpload selectedItem = mUploads.get(position);
-        if (mediaPlayer.isPlaying()) {
-            Toast.makeText(this, "Parando musica", Toast.LENGTH_SHORT).show();
-            mediaPlayer.stop();
-        }
-
         try {
-            StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getAudioUrl());
-            String key = audioRef.getBucket();
-            mediaPlayer.setDataSource(key);
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mp.start();
-                }
-            });
-            mediaPlayer.prepareAsync();
-
-            Toast.makeText(this, "Reproduciendo musica...", Toast.LENGTH_SHORT).show();
-
-        } catch (IllegalArgumentException | IOException e) {
+            String url = mUploads.get(position).getAudioUrl();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.release();
+            }
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            Toast.makeText(this, "Playing position: " + position, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void onDownloadClick(int position) {
-       /* AudioUpload selectedItem = mUploads.get(position);
-        final String selectedKey = selectedItem.getKey();
+        String url = mUploads.get(position).getAudioUrl();
+        StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+        audioRef.getDownloadUrl();
 
-        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getAudioUrl());
-        audioRef.getDownloadUrl();*/
-
-        Toast.makeText(AudioActivity.this, "No implementado", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(AudioActivity.this, "No implementado: " + audioRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(AudioActivity.this, "No implementado", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -138,6 +125,14 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
                 Toast.makeText(AudioActivity.this, "Item borrado.", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.release();
+        mediaPlayer = null;
 
     }
 }

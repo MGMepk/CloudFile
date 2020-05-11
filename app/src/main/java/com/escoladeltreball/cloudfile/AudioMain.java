@@ -10,6 +10,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +39,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AudioMain extends AppCompatActivity {
@@ -57,6 +61,7 @@ public class AudioMain extends AppCompatActivity {
 
     private Uri audioUri;
     MediaRecorder recorder;
+    MediaPlayer player;
     File audiofile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     File sampleDir = Environment.getExternalStorageDirectory();
@@ -114,6 +119,31 @@ public class AudioMain extends AppCompatActivity {
                         break;
                 }
                 return false;
+            }
+        });
+
+        player = new MediaPlayer();
+
+        txtInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String url = txtInfo.getText().toString();
+                    if (!url.isEmpty() && !url.equals(" ")) {
+                        if (player.isPlaying()) {
+                            player.release();
+                        }
+                        player = new MediaPlayer();
+                        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        player.setDataSource(url);
+                        player.prepare();
+                        player.start();
+                        Toast.makeText(AudioMain.this, "Reproduciendo", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(AudioMain.this, "Archivo no definido ", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -256,7 +286,11 @@ public class AudioMain extends AppCompatActivity {
 
     private void uploadFile() {
         if (audioUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(audioUri));
+            long yourmilliseconds = System.currentTimeMillis();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss");
+            Date resultdate = new Date(yourmilliseconds);
+
+            StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + audioName.getText().toString().trim() + "." + getFileExtension(audioUri));
 
             fileReference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
