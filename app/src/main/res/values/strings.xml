@@ -11,6 +11,6 @@
     <string name="show_uploads">Show Uploads</string>
     <string name="name">Nombre</string>
     <string name="grabar">Grabar</string>
-    <string name="sampleurl">sampleUrl</string>
+    <string name="sampleurl">sample Url</string>
     <string name="choose_document">Choose Document</string>
 </resources>
