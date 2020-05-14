@@ -40,13 +40,11 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class AudioMain extends AppCompatActivity {
     private static final String TAG = "test";
-
+    private static final String REFERENCE = "uploads/audio";
     private static final int PICK_AUDIO_REQUEST = 2;
 
     private Button chooser;
@@ -82,8 +80,8 @@ public class AudioMain extends AppCompatActivity {
         show = findViewById(R.id.show_audio_files);
         txtInfo = findViewById(R.id.info_audio);
         mProgressBar = findViewById(R.id.progress_bar);
-        mStorageRef = FirebaseStorage.getInstance().getReference("uploads/audio");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/audio");
+        mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
 
         chooser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,7 +302,7 @@ public class AudioMain extends AppCompatActivity {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            AudioUpload upload = new AudioUpload(audioName.getText().toString().trim(),
+                            Upload upload = new Upload(audioName.getText().toString().trim(),
                                     uri.toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);

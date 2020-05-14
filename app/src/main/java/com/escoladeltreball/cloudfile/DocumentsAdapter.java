@@ -16,10 +16,10 @@ import java.util.List;
 
 public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.DocumentViewHolder> {
     private Context mContext;
-    private List<DocumentsUpload> mUploads;
+    private List<Upload> mUploads;
     private DocumentsAdapter.OnItemClickListener mListener;
 
-    public DocumentsAdapter(Context context, List<DocumentsUpload> uploads) {
+    public DocumentsAdapter(Context context, List<Upload> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -33,9 +33,9 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Docu
 
     @Override
     public void onBindViewHolder(@NonNull DocumentsAdapter.DocumentViewHolder holder, int position) {
-        DocumentsUpload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getaName());
-        holder.docView.setText(uploadCurrent.getmDocUrl());
+        Upload uploadCurrent = mUploads.get(position);
+        holder.textViewName.setText(uploadCurrent.getmName());
+        holder.docView.setText(uploadCurrent.getmUrl());
 
     }
 

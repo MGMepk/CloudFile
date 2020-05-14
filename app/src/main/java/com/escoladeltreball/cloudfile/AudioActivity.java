@@ -38,7 +38,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
-    private List<AudioUpload> mUploads;
+    private List<Upload> mUploads;
 
 
     @Override
@@ -64,7 +64,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    AudioUpload upload = postSnapshot.getValue(AudioUpload.class);
+                    Upload upload = postSnapshot.getValue(Upload.class);
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
@@ -90,7 +90,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     @Override
     public void onItemClick(int position) {
         try {
-            String url = mUploads.get(position).getAudioUrl();
+            String url = mUploads.get(position).getmUrl();
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.release();
             }
@@ -107,9 +107,8 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onDownloadClick(int position) {
-        AudioUpload selectedItem = mUploads.get(position);
-        String url = selectedItem.getAudioUrl();
-        String name = selectedItem.getName();
+        Upload selectedItem = mUploads.get(position);
+        String url = selectedItem.getmUrl();
         StorageReference audioRef = mStorage.getReferenceFromUrl(url);
         audioRef.getDownloadUrl();
 
@@ -135,10 +134,10 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onDeleteClick(int position) {
-        AudioUpload selectedItem = mUploads.get(position);
+        Upload selectedItem = mUploads.get(position);
         final String selectedKey = selectedItem.getKey();
 
-        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getAudioUrl());
+        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
         audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

@@ -33,7 +33,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
-    private List<DocumentsUpload> mUploads;
+    private List<Upload> mUploads;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,8 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    DocumentsUpload upload = postSnapshot.getValue(DocumentsUpload.class);
-                    upload.setmKey(postSnapshot.getKey());
+                    Upload upload = postSnapshot.getValue(Upload.class);
+                    upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
 
@@ -84,8 +84,8 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     @Override
     public void onItemClick(int position) {
-        DocumentsUpload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmDocUrl();
+        Upload selectedItem = mUploads.get(position);
+        String url = selectedItem.getmUrl();
 
 
     }
@@ -97,10 +97,10 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     @Override
     public void onDeleteClick(int position) {
-        DocumentsUpload selectedItem = mUploads.get(position);
-        final String selectedKey = selectedItem.getmKey();
+        Upload selectedItem = mUploads.get(position);
+        final String selectedKey = selectedItem.getKey();
 
-        StorageReference docRef = mStorage.getReferenceFromUrl(selectedItem.getmDocUrl());
+        StorageReference docRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
         docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

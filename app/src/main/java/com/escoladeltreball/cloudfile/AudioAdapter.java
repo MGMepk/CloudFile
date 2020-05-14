@@ -18,10 +18,10 @@ import java.util.List;
 
 public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHolder> {
     private Context mContext;
-    private List<AudioUpload> mUploads;
+    private List<Upload> mUploads;
     private OnItemClickListener mListener;
 
-    public AudioAdapter(Context context, List<AudioUpload> uploads) {
+    public AudioAdapter(Context context, List<Upload> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -35,9 +35,9 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
 
     @Override
     public void onBindViewHolder(@NonNull AudioViewHolder holder, int position) {
-        AudioUpload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getName());
-        holder.audioView.setText(uploadCurrent.getAudioUrl());
+        Upload uploadCurrent = mUploads.get(position);
+        holder.textViewName.setText(uploadCurrent.getmName());
+        holder.audioView.setText(uploadCurrent.getmUrl());
 
     }
 
