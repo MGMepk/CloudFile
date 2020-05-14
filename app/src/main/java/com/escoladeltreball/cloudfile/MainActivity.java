@@ -8,17 +8,16 @@ import android.view.View;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton iButtonImage, iButtonAudio, iButtonVideo, iButtonDoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iButtonImage = findViewById(R.id.button_images);
-        iButtonAudio = findViewById(R.id.button_audio);
-        iButtonVideo = findViewById(R.id.button_video);
-        iButtonDoc = findViewById(R.id.button_documents);
+        ImageButton iButtonImage = findViewById(R.id.button_images);
+        ImageButton iButtonAudio = findViewById(R.id.button_audio);
+        ImageButton iButtonVideo = findViewById(R.id.button_video);
+        ImageButton iButtonDoc = findViewById(R.id.button_documents);
 
 
         iButtonImage.setOnClickListener(new View.OnClickListener() {

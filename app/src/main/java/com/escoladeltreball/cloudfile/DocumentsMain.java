@@ -30,6 +30,7 @@ import java.util.Date;
 
 public class DocumentsMain extends AppCompatActivity {
     private static final int PICK_DOC_REQUEST = 3;
+    private static final String REFERENCE = "uploads/documents";
 
     private Button chooser;
     private Button upload;
@@ -54,8 +55,8 @@ public class DocumentsMain extends AppCompatActivity {
         show = findViewById(R.id.show_doc_files);
         documentView = findViewById(R.id.document_view);
         mProgressBar = findViewById(R.id.progress_bar);
-        mStorageRef = FirebaseStorage.getInstance().getReference("uploads/documents");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/documents");
+        mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
 
         chooser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +128,7 @@ public class DocumentsMain extends AppCompatActivity {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            DocumentsUpload upload = new DocumentsUpload(docName.getText().toString().trim(),
+                            Upload upload = new Upload(docName.getText().toString().trim(),
                                     uri.toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
