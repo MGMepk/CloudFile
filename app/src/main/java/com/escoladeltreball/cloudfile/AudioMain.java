@@ -166,7 +166,7 @@ public class AudioMain extends AppCompatActivity {
 
                     Toast.makeText(this, "Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls ", Toast.LENGTH_LONG).show();
 
-                    txtInfo.setText("Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls els dos");
+                    txtInfo.setText("Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls els dos.");
 
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
