@@ -154,7 +154,7 @@ public class DocumentsMain extends AppCompatActivity {
         }
     }
 
-    private void openDocumentsActivity() {
+    public void openDocumentsActivity() {
         Intent intent = new Intent(this, DocumentsActivity.class);
         startActivity(intent);
     }
