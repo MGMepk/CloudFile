@@ -80,7 +80,6 @@ public class AudioMain extends AppCompatActivity {
         upload = findViewById(R.id.upload_audio);
         audioName = findViewById(R.id.audio_file_name);
         grabar = findViewById(R.id.grabar);
-        show = findViewById(R.id.show_audio_files);
         txtInfo = findViewById(R.id.info_audio);
         mProgressBar = findViewById(R.id.progress_bar);
         mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
@@ -100,12 +99,6 @@ public class AudioMain extends AppCompatActivity {
             }
         });
 
-        show.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAudioActivity();
-            }
-        });
 
         grabar.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -53,16 +53,5 @@
         android:layout_centerHorizontal="true"
         android:text="@string/upload" />
 
-    <TextView
-        android:id="@+id/show_audio_files"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/upload_audio"
-        android:layout_alignBottom="@id/upload_audio"
-        android:layout_marginStart="25dp"
-        android:layout_toEndOf="@id/upload_audio"
-        android:gravity="center"
-        android:text="@string/show_uploads" />
-
 
 </RelativeLayout>
