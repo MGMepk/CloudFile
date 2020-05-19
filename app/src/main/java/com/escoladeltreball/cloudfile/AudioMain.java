@@ -19,6 +19,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -77,7 +80,6 @@ public class AudioMain extends AppCompatActivity {
         upload = findViewById(R.id.upload_audio);
         audioName = findViewById(R.id.audio_file_name);
         grabar = findViewById(R.id.grabar);
-        show = findViewById(R.id.show_audio_files);
         txtInfo = findViewById(R.id.info_audio);
         mProgressBar = findViewById(R.id.progress_bar);
         mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
@@ -97,12 +99,6 @@ public class AudioMain extends AppCompatActivity {
             }
         });
 
-        show.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAudioActivity();
-            }
-        });
 
         grabar.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -334,4 +330,23 @@ public class AudioMain extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.cloudfile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.audio_uploads:
+                openAudioActivity();
+                return true;
+            case R.id.Documents_uploads:
+                //DocumentsMain.openDocumentsActivity();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
