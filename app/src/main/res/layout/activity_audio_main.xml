@@ -10,7 +10,29 @@
         android:id="@+id/button_choose_audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:text="@string/choose_audio_file" />
+
+    <Button
+        android:id="@+id/boto_escollir_imatge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="85dp"
+
+        android:text="imatge" />
+
+    <Button
+        android:id="@+id/boto_escollir_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="168dp"
+        android:text="video" />
 
     <EditText
         android:id="@+id/audio_file_name"
@@ -19,6 +41,7 @@
         android:layout_toEndOf="@id/button_choose_audio"
         android:autofillHints=""
         android:inputType="text"
+        android:layout_marginStart="180dp"
         tools:ignore="LabelFor" />
 
     <TextView
@@ -27,7 +50,26 @@
         android:layout_height="match_parent"
         android:layout_above="@id/progress_bar"
         android:layout_below="@id/audio_file_name"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"/>
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progress_bar"
+        android:layout_below="@id/audio_file_name"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progress_bar"
+        android:layout_below="@id/audio_file_name"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"

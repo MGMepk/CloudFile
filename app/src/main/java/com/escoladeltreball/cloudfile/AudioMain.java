@@ -27,9 +27,12 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,19 +52,26 @@ import java.util.Date;
 public class AudioMain extends AppCompatActivity {
     private static final String TAG = "test";
     private static final String REFERENCE = "uploads/audio";
-    private static final int PICK_AUDIO_REQUEST = 2;
+    private static final int PICK_AUDIO_REQUEST = 3;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int PICK_VIDEO_REQUEST = 2;
 
-    private Button chooser;
+    private Button chooserImage;
+    private Button chooserVideo;
+    private Button chooserAudio;
     private Button upload;
     private Button grabar;
-    private EditText audioName;
+    private EditText fileName;
     private TextView txtInfo;
+
+    private VideoView mVideoView;
+    private ImageView mImageView;
 
     private ProgressBar mProgressBar;
 
     private TextView show;
 
-    private Uri audioUri;
+    private Uri fileUri;
     MediaRecorder recorder;
     MediaPlayer player;
     File audiofile = null;
@@ -76,19 +87,38 @@ public class AudioMain extends AppCompatActivity {
         setContentView(R.layout.activity_audio_main);
         this.setTitle(R.string.audio);
 
-        chooser = findViewById(R.id.button_choose_audio);
+        chooserAudio = findViewById(R.id.button_choose_audio);
+        chooserVideo = findViewById(R.id.boto_escollir_video);
+        chooserImage = findViewById(R.id.boto_escollir_imatge);
         upload = findViewById(R.id.upload_audio);
-        audioName = findViewById(R.id.audio_file_name);
+        fileName = findViewById(R.id.audio_file_name);
         grabar = findViewById(R.id.grabar);
         txtInfo = findViewById(R.id.info_audio);
         mProgressBar = findViewById(R.id.progress_bar);
         mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
 
-        chooser.setOnClickListener(new View.OnClickListener() {
+        mVideoView = findViewById(R.id.video_view);
+        mImageView = findViewById(R.id.image_view);
+
+        chooserImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageChooser();
+            }
+        });
+
+        chooserAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openAudioChooser();
+            }
+        });
+
+        chooserVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openVideoChooser();
             }
         });
 
@@ -241,9 +271,9 @@ public class AudioMain extends AppCompatActivity {
             ContentResolver contentResolver = getContentResolver();
 
             Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            audioUri = contentResolver.insert(base, values);
+            fileUri = contentResolver.insert(base, values);
 
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, audioUri));
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "addRecordingToMediaLibrary: " + e.getCause() + ", " + e.getMessage() + ", ");
@@ -259,13 +289,50 @@ public class AudioMain extends AppCompatActivity {
         startActivityForResult(intent, PICK_AUDIO_REQUEST);
     }
 
+    private void openImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        mImageView.setVisibility(ImageView.VISIBLE);
+        mVideoView.setVisibility(VideoView.INVISIBLE);
+    }
+
+    private void openVideoChooser() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_VIDEO_REQUEST);
+        mVideoView.setVisibility(VideoView.VISIBLE);
+        mImageView.setVisibility(ImageView.INVISIBLE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
-            audioUri = data.getData();
-            txtInfo.setText(audioUri.getPath());
+            fileUri = data.getData();
+            txtInfo.setText(fileUri.getPath());
+        }
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            fileUri = data.getData();
+
+            Picasso.with(this).load(fileUri).into(mImageView);
+        }
+        if(requestCode == PICK_VIDEO_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            fileUri = data.getData();
+
+            mVideoView.setVideoURI(fileUri);
+            MediaController mediaController = new MediaController(this);
+            mediaController.setAnchorView(mVideoView);
+            mVideoView.setMediaController(mediaController);
+            mVideoView.start();
+
+            // mVideoView = (VideoView)findViewById(R.id.video_view);
+            //mVideoView.setVideoURI(mImageUri);
         }
     }
 
@@ -277,14 +344,14 @@ public class AudioMain extends AppCompatActivity {
 
 
     private void uploadFile() {
-        if (audioUri != null) {
+        if (fileUri != null) {
             long yourmilliseconds = System.currentTimeMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss");
             Date resultdate = new Date(yourmilliseconds);
 
-            StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + audioName.getText().toString().trim() + "." + getFileExtension(audioUri));
+            StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
 
-            fileReference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            fileReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Handler handler = new Handler();
@@ -298,7 +365,7 @@ public class AudioMain extends AppCompatActivity {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Upload upload = new Upload(audioName.getText().toString().trim(),
+                            Upload upload = new Upload(fileName.getText().toString().trim(),
                                     uri.toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
