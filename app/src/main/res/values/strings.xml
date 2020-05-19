@@ -3,7 +3,7 @@
     <string name="escoge_qu_gestionar">Escoge qué gestionar</string>
     <string name="docs">Documentos</string>
     <string name="audio">Audio</string>
-    <string name="choose_audio_file">Choose Audio</string>
+    <string name="choose_audio_file">Audio</string>
     <string name="upload">Upload</string>
     <string name="documentos">Documentos</string>
     <string name="video">Video</string>
@@ -12,5 +12,7 @@
     <string name="name">Nombre</string>
     <string name="grabar">Grabar</string>
     <string name="sampleurl">sample Url</string>
-    <string name="choose_document">Choose Document</string>
+    <string name="choose_document">Document</string>
+    <string name="video_uploads">Video</string>
+    <string name="images_upload">Images</string>
 </resources>
