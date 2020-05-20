@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.view.View;
@@ -37,6 +38,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
     private List<Upload> mUploads;
+    private String uploadUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,11 +89,21 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     @Override
     public void onItemClick(int position) {
         Toast.makeText(this, "Posició:" + position, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
-    public void onWhatEverClick(int position) {
-        Toast.makeText(this, "Qualsevol:" + position, Toast.LENGTH_SHORT).show();
+    public void onOpenClick(int position) {
+
+        Upload uploadCurrent = mUploads.get(position);
+        uploadUri = uploadCurrent.getmUrl();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setClass(this,  FullScreenImageActivity.class);
+        intent.putExtra("image", uploadUri);
+
+        startActivity(intent);
+
+        Toast.makeText(this, "Imagen:" + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -103,7 +115,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(ImagesActivity.this, "Fitxer borrat", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ImagesActivity.this, "Borrado", Toast.LENGTH_SHORT).show();
             }
         });
     }
