@@ -16,13 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+        <activity android:name=".ImagesActivity"></activity>
         <activity android:name=".DocumentsActivity" />
         <activity android:name=".AudioActivity" />
         <activity
             android:name=".DocumentsMain"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".AudioMain"
+            android:name=".MultimediaMain"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

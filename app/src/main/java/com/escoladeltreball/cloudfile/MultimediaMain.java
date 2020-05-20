@@ -49,7 +49,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AudioMain extends AppCompatActivity {
+public class MultimediaMain extends AppCompatActivity {
     private static final String TAG = "test";
     private static final String REFERENCE = "uploads/audio";
     private static final int PICK_AUDIO_REQUEST = 3;
@@ -84,7 +84,7 @@ public class AudioMain extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_main);
+        setContentView(R.layout.activity_multimedia);
         this.setTitle(R.string.audio);
 
         chooserAudio = findViewById(R.id.button_choose_audio);
@@ -161,9 +161,9 @@ public class AudioMain extends AppCompatActivity {
                         player.setDataSource(url);
                         player.prepare();
                         player.start();
-                        Toast.makeText(AudioMain.this, "Reproduciendo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MultimediaMain.this, "Reproduciendo", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(AudioMain.this, "Archivo no definido ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MultimediaMain.this, "Archivo no definido ", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -372,12 +372,12 @@ public class AudioMain extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(AudioMain.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MultimediaMain.this, "Upload Successful", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(AudioMain.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MultimediaMain.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -397,6 +397,11 @@ public class AudioMain extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void openImagesActivity() {
+        Intent intent = new Intent(this, ImagesActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -411,6 +416,11 @@ public class AudioMain extends AppCompatActivity {
                 openAudioActivity();
                 return true;
             case R.id.Documents_uploads:
+
+
+            case R.id.image_uploads:
+                openImagesActivity();
+                return true;
                 //DocumentsMain.openDocumentsActivity();
             default:
                 return super.onOptionsItemSelected(item);
