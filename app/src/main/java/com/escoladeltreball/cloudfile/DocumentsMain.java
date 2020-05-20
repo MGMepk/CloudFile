@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -36,7 +39,6 @@ public class DocumentsMain extends AppCompatActivity {
     private Button upload;
     private EditText docName;
     private TextView documentView;
-    private TextView show;
     private ProgressBar mProgressBar;
     private Uri docUri;
 
@@ -52,7 +54,6 @@ public class DocumentsMain extends AppCompatActivity {
         chooser = findViewById(R.id.button_choose_doc);
         upload = findViewById(R.id.upload_doc);
         docName = findViewById(R.id.document_name);
-        show = findViewById(R.id.show_doc_files);
         documentView = findViewById(R.id.document_view);
         mProgressBar = findViewById(R.id.progress_bar);
         mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
@@ -72,12 +73,6 @@ public class DocumentsMain extends AppCompatActivity {
             }
         });
 
-        show.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDocumentsActivity();
-            }
-        });
     }
 
 
@@ -157,6 +152,25 @@ public class DocumentsMain extends AppCompatActivity {
     public void openDocumentsActivity() {
         Intent intent = new Intent(this, DocumentsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.docs_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.documents_uploads:
+               openDocumentsActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

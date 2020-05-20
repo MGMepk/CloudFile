@@ -344,7 +344,9 @@ public class AudioMain extends AppCompatActivity {
                 openAudioActivity();
                 return true;
             case R.id.Documents_uploads:
-                //DocumentsMain.openDocumentsActivity();
+                Intent intent = new Intent(this, DocumentsMain.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

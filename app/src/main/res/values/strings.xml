@@ -15,4 +15,5 @@
     <string name="choose_document">Document</string>
     <string name="video_uploads">Video</string>
     <string name="images_upload">Images</string>
+    <string name="edit">Editar</string>
 </resources>

@@ -46,15 +46,12 @@
         android:layout_centerHorizontal="true"
         android:text="@string/upload" />
 
-    <TextView
-        android:id="@+id/show_doc_files"
+    <Button
+        android:id="@+id/edit_doc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/upload_doc"
-        android:layout_alignBottom="@id/upload_doc"
-        android:layout_marginStart="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_toEndOf="@id/upload_doc"
-        android:gravity="center"
-        android:text="@string/show_uploads" />
-
+        android:text="@string/edit" />
 </RelativeLayout>
