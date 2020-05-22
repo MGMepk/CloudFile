@@ -15,6 +15,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +36,9 @@ public class DocumentsMain extends AppCompatActivity {
     private static final int PICK_DOC_REQUEST = 3;
     private static final String REFERENCE = "uploads/documents";
 
-    private Button chooser;
+    private ImageButton chooser;
     private Button upload;
+    private ImageButton editor;
     private EditText docName;
     private TextView documentView;
     private ProgressBar mProgressBar;
@@ -53,6 +55,7 @@ public class DocumentsMain extends AppCompatActivity {
 
         chooser = findViewById(R.id.button_choose_doc);
         upload = findViewById(R.id.upload_doc);
+        editor = findViewById(R.id.edit_doc);
         docName = findViewById(R.id.document_name);
         documentView = findViewById(R.id.document_view);
         mProgressBar = findViewById(R.id.progress_bar);
@@ -73,12 +76,20 @@ public class DocumentsMain extends AppCompatActivity {
             }
         });
 
-    }
+        editor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openEditorActivity();
+            }
+        });
 
+    }
 
     private void openDocChooser() {
         Intent intent = new Intent();
-        intent.setType("text/* application/pdf");
+        intent.setType("*/*");
+        String[] mimetypes = {"text/*", "application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_DOC_REQUEST);
     }
@@ -154,6 +165,21 @@ public class DocumentsMain extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openEditorActivity() {
+
+        if (docUri != null) {
+
+            if (getFileExtension(docUri).equals("txt")) {
+                Intent intent = new Intent(this, DocumentEditor.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Aquest document no es editable", Toast.LENGTH_LONG).show();
+            }
+        } else {
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -166,7 +192,7 @@ public class DocumentsMain extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.documents_uploads:
-               openDocumentsActivity();
+                openDocumentsActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

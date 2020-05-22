@@ -6,11 +6,11 @@
     android:padding="16dp"
     tools:context=".DocumentsMain">
 
-    <Button
+    <ImageButton
         android:id="@+id/button_choose_doc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/choose_document" />
+        android:src="@drawable/library_docs" />
 
     <EditText
         android:id="@+id/document_name"
@@ -46,12 +46,13 @@
         android:layout_centerHorizontal="true"
         android:text="@string/upload" />
 
-    <Button
+    <ImageButton
         android:id="@+id/edit_doc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_toEndOf="@id/upload_doc"
-        android:text="@string/edit" />
+        android:src="@drawable/mode_edit"
+        />
 </RelativeLayout>
