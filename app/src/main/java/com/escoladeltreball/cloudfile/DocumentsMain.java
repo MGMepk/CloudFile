@@ -169,13 +169,14 @@ public class DocumentsMain extends AppCompatActivity {
 
         if (docUri != null) {
 
-            if (getFileExtension(docUri).equals("txt")) {
+            if (!getFileExtension(docUri).equals("pdf")) {
                 Intent intent = new Intent(this, DocumentEditor.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Aquest document no es editable", Toast.LENGTH_LONG).show();
             }
         } else {
+            Toast.makeText(this, "Nou Document", Toast.LENGTH_LONG).show();
         }
 
     }
