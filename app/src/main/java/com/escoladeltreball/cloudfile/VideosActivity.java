@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.view.View;
@@ -29,9 +30,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagesActivity extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
+public class VideosActivity extends AppCompatActivity implements VideoAdapter.OnItemClickListener {
     private RecyclerView mRecyclerView;
-    private ImageAdapter mAdapter;
+    private VideoAdapter mAdapter;
     private ProgressBar mProgressCircle;
 
     private FirebaseStorage mStorage;
@@ -43,9 +44,9 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_images);
+        setContentView(R.layout.activity_videos);
 
-        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView = findViewById(R.id.recycler_view_videos);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -53,13 +54,13 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         mUploads = new ArrayList<>();
 
-        mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
+        mAdapter = new VideoAdapter(VideosActivity.this, mUploads);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(ImagesActivity.this);
+        mAdapter.setOnItemClickListener(VideosActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/videos");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +81,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(ImagesActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideosActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
         });
@@ -97,9 +98,10 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         Upload uploadCurrent = mUploads.get(position);
         uploadUri = uploadCurrent.getmUrl();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(uploadUri));
+        intent.setDataAndType(Uri.parse(uploadCurrent.getmUrl()), "video/mp4");
         intent.setClass(this,  FullScreenImageActivity.class);
-        intent.putExtra("image", uploadUri);
+        intent.putExtra("video", uploadUri);
 
         startActivity(intent);
 
@@ -115,7 +117,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(ImagesActivity.this, "Borrado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideosActivity.this, "Borrado", Toast.LENGTH_SHORT).show();
             }
         });
     }

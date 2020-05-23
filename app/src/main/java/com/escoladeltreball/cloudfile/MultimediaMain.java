@@ -426,6 +426,10 @@ public class MultimediaMain extends AppCompatActivity {
         Intent intent = new Intent(this, ImagesActivity.class);
         startActivity(intent);
     }
+    private void openVideosActivity() {
+        Intent intent = new Intent(this, VideosActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -447,6 +451,11 @@ public class MultimediaMain extends AppCompatActivity {
                 openImagesActivity();
                 return true;
                 //DocumentsMain.openDocumentsActivity();
+
+            case R.id.video_uploads:
+                openVideosActivity();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

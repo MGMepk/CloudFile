@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".FullScreenImageActivity"></activity>
+        <activity android:name=".VideosActivity"></activity>
+        <activity android:name=".FullScreenImageActivity" />
         <activity android:name=".ImagesActivity" />
         <activity android:name=".DocumentsActivity" />
         <activity android:name=".AudioActivity" />
