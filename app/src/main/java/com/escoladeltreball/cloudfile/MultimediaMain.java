@@ -51,7 +51,7 @@ import java.util.Date;
 
 public class MultimediaMain extends AppCompatActivity {
     private static final String TAG = "test";
-    private static final String REFERENCE = "uploads/audio";
+    private static String REFERENCE = "uploads/";
     private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
@@ -348,6 +348,31 @@ public class MultimediaMain extends AppCompatActivity {
             long yourmilliseconds = System.currentTimeMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss");
             Date resultdate = new Date(yourmilliseconds);
+
+            String extension = getFileExtension(fileUri);
+
+            //Toast.makeText(MultimediaMain.this,"extension" + extension, Toast.LENGTH_SHORT).show();
+
+            if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("png")){
+                REFERENCE = "uploads/images";
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+
+            }
+            if (extension.equalsIgnoreCase("mp4")){
+                REFERENCE = "uploads/videos";
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+
+            }
+
+            if (extension.equalsIgnoreCase("3gpp")  || extension.equalsIgnoreCase("mp3")){
+                REFERENCE = "uploads/audio";
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+
+            }
+
 
             StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
 
