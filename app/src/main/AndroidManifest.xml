@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".DocumentEditor"></activity>
         <activity android:name=".DocumentsActivity" />
         <activity android:name=".AudioActivity" />
         <activity

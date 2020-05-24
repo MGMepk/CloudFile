@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openAudioMain() {
-        Intent intent = new Intent(this, AudioMain.class);
+        Intent intent = new Intent(this, MultimediaMain.class);
         startActivity(intent);
     }
 
