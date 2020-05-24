@@ -1,10 +1,12 @@
 package com.escoladeltreball.cloudfile;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -99,7 +101,8 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepare();
             mediaPlayer.start();
-            Toast.makeText(this, "Playing position: " + position, Toast.LENGTH_SHORT).show();
+            String playing = getString(R.string.playing_pos);
+            Toast.makeText(this, playing + " " + position, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,17 +137,30 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onDeleteClick(int position) {
-        Upload selectedItem = mUploads.get(position);
+
+        final Upload selectedItem = mUploads.get(position);
         final String selectedKey = selectedItem.getKey();
 
-        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
-        audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(AudioActivity.this, "Item borrado.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.delete_message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mDatabaseRef.child(selectedKey).removeValue();
+                                Toast.makeText(AudioActivity.this, R.string.item_deleted, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
 
     }
 

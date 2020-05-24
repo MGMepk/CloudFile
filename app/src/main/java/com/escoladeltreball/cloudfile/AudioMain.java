@@ -66,7 +66,7 @@ public class AudioMain extends AppCompatActivity {
     File audiofile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     File sampleDir = Environment.getExternalStorageDirectory();
-    File soundDir = new File(sampleDir, "Sons_Grabacio");
+    File soundDir = new File(sampleDir, "CloudFile_records");
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
 
@@ -131,9 +131,9 @@ public class AudioMain extends AppCompatActivity {
                         player.setDataSource(url);
                         player.prepare();
                         player.start();
-                        Toast.makeText(AudioMain.this, "Reproduciendo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AudioMain.this, R.string.playing, Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(AudioMain.this, "Archivo no definido ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AudioMain.this, R.string.undefined, Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -208,7 +208,7 @@ public class AudioMain extends AppCompatActivity {
             }
         }
 
-        Toast.makeText(this, "Start Recording", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.start, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -227,7 +227,7 @@ public class AudioMain extends AppCompatActivity {
             Toast.makeText(this, "Exception" + e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
         }
 
-        Toast.makeText(this, "Stop Recording", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.stop, Toast.LENGTH_SHORT).show();
     }
 
     protected void addRecordingToMediaLibrary() {
@@ -305,7 +305,7 @@ public class AudioMain extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(AudioMain.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AudioMain.this, R.string.upload_succes, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -320,7 +320,7 @@ public class AudioMain extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "no file selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_file, Toast.LENGTH_SHORT).show();
         }
     }
 

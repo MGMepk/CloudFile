@@ -72,9 +72,9 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Docu
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select Action");
-            MenuItem download = menu.add(Menu.NONE, 1, 1, "Download");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
+            menu.setHeaderTitle(R.string.select);
+            MenuItem download = menu.add(Menu.NONE, 1, 1, R.string.download);
+            MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
             download.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);

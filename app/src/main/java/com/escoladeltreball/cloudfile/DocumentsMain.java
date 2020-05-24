@@ -137,11 +137,12 @@ public class DocumentsMain extends AppCompatActivity {
                             Upload upload = new Upload(docName.getText().toString().trim(),
                                     uri.toString());
                             String uploadId = mDatabaseRef.push().getKey();
+                            assert uploadId != null;
                             mDatabaseRef.child(uploadId).setValue(upload);
                         }
                     });
 
-                    Toast.makeText(DocumentsMain.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DocumentsMain.this, R.string.upload_succes, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -156,7 +157,7 @@ public class DocumentsMain extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "no file selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_file, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -173,10 +174,10 @@ public class DocumentsMain extends AppCompatActivity {
                 Intent intent = new Intent(this, DocumentEditor.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Aquest document no es editable", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.non_editable, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "Nou Document", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.new_doc, Toast.LENGTH_LONG).show();
         }
 
     }

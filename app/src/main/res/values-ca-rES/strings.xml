@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CloudFile</string>
+    <string name="choose">Escull qué fer</string>
+    <string name="docs">Documents</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="images">Imatges</string>
+    <string name="show_uploads">Mostrar</string>
+    <string name="name">Nom</string>
+    <string name="record">Gravar</string>
+    <string name="sampleurl">sample Url</string>
+    <string name="choose_document">Document</string>
+    <string name="edit">Editar</string>
+    <string name="playing_pos">"Reproduïnt posició "</string>
+    <string name="playing">Reproduïnt</string>
+    <string name="delete_message">Segur que vols esborrar aquest element?</string>
+    <string name="item_deleted">Element esborrat</string>
+    <string name="no_file">Arxiu no seleccionat</string>
+    <string name="undefined">Arxiu no definit</string>
+    <string name="upload_succes">Pujat Correctament</string>
+    <string name="non_editable">Aquest document no és editable</string>
+    <string name="new_doc">Nou Document</string>
+
+    <!--adapter menu -->
+    <string name="select">Selecciona Acció</string>
+    <string name="download">Descarregar</string>
+    <string name="delete">Esborrar</string>
+
+    <!-- Enregistrant -->
+    <string name="start">Enregistrant</string>
+    <string name="stop">Parant registre</string>
+</resources>

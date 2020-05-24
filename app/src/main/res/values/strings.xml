@@ -1,19 +1,34 @@
 <resources>
     <string name="app_name">CloudFile</string>
-    <string name="escoge_qu_gestionar">Escoge qué gestionar</string>
-    <string name="docs">Documentos</string>
+    <string name="choose">Choose what to do</string>
+    <string name="docs">Documents</string>
     <string name="audio">Audio</string>
-    <string name="choose_audio_file">Audio</string>
     <string name="upload">Upload</string>
-    <string name="documentos">Documentos</string>
     <string name="video">Video</string>
-    <string name="imagenes">Imagenes</string>
+    <string name="images">Images</string>
     <string name="show_uploads">Show Uploads</string>
-    <string name="name">Nombre</string>
-    <string name="grabar">Grabar</string>
+    <string name="name">Name</string>
+    <string name="record">Record</string>
     <string name="sampleurl">sample Url</string>
     <string name="choose_document">Document</string>
-    <string name="video_uploads">Video</string>
-    <string name="images_upload">Images</string>
-    <string name="edit">Editar</string>
+    <string name="edit">Edit</string>
+    <string name="playing_pos">Playing position:</string>
+    <string name="playing">Playing</string>
+    <string name="delete_message">Are you sure you want to delete this entry?</string>
+    <string name="item_deleted">Deleted item</string>
+    <string name="no_file">no file selected</string>
+    <string name="undefined"> file undefined</string>
+    <string name="upload_succes">Upload Successful</string>
+    <string name="non_editable">This document is not editable</string>
+    <string name="new_doc">New Document</string>
+
+    <!--adapter menu -->
+    <string name="select">Select Action</string>
+    <string name="download">Download</string>
+    <string name="delete">Delete</string>
+
+    <!-- Recording -->
+    <string name="start">Start Recording</string>
+    <string name="stop">Stop Recording</string>
+
 </resources>
