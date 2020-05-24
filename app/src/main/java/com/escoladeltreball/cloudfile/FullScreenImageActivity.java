@@ -1,13 +1,12 @@
 package com.escoladeltreball.cloudfile;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,12 +20,12 @@ public class FullScreenImageActivity extends AppCompatActivity {
         Uri Uri = null;
         Uri fileUri = null;
 
-        ImageView fullScreenImageView = (ImageView) findViewById(R.id.fullScreenImageView);
-        VideoView reproVideo = (VideoView) findViewById(R.id.videoRepro);
+        ImageView fullScreenImageView = findViewById(R.id.fullScreenImageView);
+        VideoView reproVideo = findViewById(R.id.videoRepro);
 
         Bundle extras = getIntent().getExtras();
 
-        if (extras != null && extras.containsKey("image")){
+        if (extras != null && extras.containsKey("image")) {
 
             fullScreenImageView.setVisibility(ImageView.VISIBLE);
             reproVideo.setVisibility(VideoView.INVISIBLE);
@@ -37,7 +36,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
                     .into(fullScreenImageView);
         }
 
-        if (extras != null && extras.containsKey("video")){
+        if (extras != null && extras.containsKey("video")) {
 
             reproVideo.setVisibility(VideoView.VISIBLE);
             fullScreenImageView.setVisibility(ImageView.INVISIBLE);

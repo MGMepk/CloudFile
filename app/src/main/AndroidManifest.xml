@@ -16,18 +16,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".DocumentsActivity" />
-        <activity android:name=".AudioActivity" />
+        <activity
+            android:name=".VideosActivity"
+            android:parentActivityName=".MultimediaMain" />
+        <activity android:name=".FullScreenImageActivity" />
+        <activity
+            android:name=".ImagesActivity"
+            android:parentActivityName=".MultimediaMain" />
+        <activity
+            android:name=".DocumentsActivity"
+            android:parentActivityName=".DocumentsMain" />
+        <activity
+            android:name=".AudioActivity"
+            android:parentActivityName=".MultimediaMain" />
         <activity
             android:name=".DocumentsMain"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".AudioMain"
+            android:name=".MultimediaMain"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

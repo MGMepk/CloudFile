@@ -1,11 +1,11 @@
 package com.escoladeltreball.cloudfile;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,36 +14,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton iButtonImage = findViewById(R.id.button_images);
-        ImageButton iButtonAudio = findViewById(R.id.button_audio);
-        ImageButton iButtonVideo = findViewById(R.id.button_video);
-        ImageButton iButtonDoc = findViewById(R.id.button_documents);
+
+        Button multimedia = findViewById(R.id.button_multimedia);
+        Button doc = findViewById(R.id.button_documents);
 
 
-        iButtonImage.setOnClickListener(new View.OnClickListener() {
+        multimedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // intent imageActivity
+                openMultimediaMain();
             }
         });
 
 
-        iButtonAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAudioMain();
-
-            }
-        });
-
-        iButtonVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // intent videoActivity
-            }
-        });
-
-        iButtonDoc.setOnClickListener(new View.OnClickListener() {
+        doc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDocumentsMain();
@@ -52,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void openAudioMain() {
+    private void openMultimediaMain() {
         Intent intent = new Intent(this, MultimediaMain.class);
         startActivity(intent);
     }

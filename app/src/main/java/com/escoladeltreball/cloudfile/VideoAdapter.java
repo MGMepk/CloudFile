@@ -3,7 +3,6 @@ package com.escoladeltreball.cloudfile;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,14 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -60,11 +55,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
         //fileUri = uploadCurrent.getData();
 
         //VideoView video = new VideoView();
-       // holder.videoView.setVideoURI(Uri.parse(uploadUri));
-       // MediaController mediaController = new MediaController(mContext);
-       // mediaController.setAnchorView(videoView);
-       // videoView.setMediaController(mediaController);
-       //videoView.start();
+        // holder.videoView.setVideoURI(Uri.parse(uploadUri));
+        // MediaController mediaController = new MediaController(mContext);
+        // mediaController.setAnchorView(videoView);
+        // videoView.setMediaController(mediaController);
+        //videoView.start();
     }
 
     @Override
@@ -98,9 +93,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Seleccionar una acción");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Abrir");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Borrar");
+            menu.setHeaderTitle(R.string.select);
+            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, R.string.open);
+            MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
             doWhatever.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
@@ -127,11 +122,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+
         void onOpenClick(int position);
+
         void onDeleteClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 }

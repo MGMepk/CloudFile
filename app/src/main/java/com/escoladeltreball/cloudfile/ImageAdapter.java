@@ -76,11 +76,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Seleccionar una acción");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Abrir");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Borrar");
+            menu.setHeaderTitle(R.string.select);
+            MenuItem openImg = menu.add(Menu.NONE, 1, 1, R.string.open);
+            MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
-            doWhatever.setOnMenuItemClickListener(this);
+            openImg.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 
@@ -105,11 +105,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+
         void onOpenClick(int position);
+
         void onDeleteClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 }

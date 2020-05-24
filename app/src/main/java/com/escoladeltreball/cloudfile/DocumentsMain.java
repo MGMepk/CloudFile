@@ -1,8 +1,5 @@
 package com.escoladeltreball.cloudfile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,6 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -195,6 +195,9 @@ public class DocumentsMain extends AppCompatActivity {
 
             case R.id.documents_uploads:
                 openDocumentsActivity();
+                return true;
+            case R.id.multimedia:
+                startActivity(new Intent(this, MultimediaMain.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

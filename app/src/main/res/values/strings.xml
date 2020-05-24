@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CloudFile</string>
-    <string name="choose">Choose what to do</string>
     <string name="docs">Documents</string>
     <string name="audio">Audio</string>
     <string name="upload">Upload</string>
@@ -22,13 +21,20 @@
     <string name="non_editable">This document is not editable</string>
     <string name="new_doc">New Document</string>
 
+    <string name="request_permissions">For security reasons, SD and microphone are disabled, enable both.</string>
+
     <!--adapter menu -->
     <string name="select">Select Action</string>
     <string name="download">Download</string>
+    <string name="open">Open</string>
     <string name="delete">Delete</string>
 
     <!-- Recording -->
     <string name="start">Start Recording</string>
     <string name="stop">Stop Recording</string>
+    <string name="multimedia">Multimedia</string>
+    <!-- -->
+    <string name="video_recording">Video recording</string>
+    <string name="take_a_photo">Take a photo</string>
 
 </resources>

@@ -6,4 +6,8 @@
         android:id="@+id/documents_uploads"
         android:title="@string/show_uploads"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/multimedia"
+        android:title="@string/multimedia"
+        app:showAsAction="never" />
 </menu>

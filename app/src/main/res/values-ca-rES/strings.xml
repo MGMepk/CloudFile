@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CloudFile</string>
-    <string name="choose">Escull qué fer</string>
     <string name="docs">Documents</string>
     <string name="audio">Audio</string>
+    <string name="upload">Pujar</string>
     <string name="video">Video</string>
     <string name="images">Imatges</string>
     <string name="show_uploads">Mostrar</string>
@@ -22,12 +22,21 @@
     <string name="non_editable">Aquest document no és editable</string>
     <string name="new_doc">Nou Document</string>
 
+    <string name="request_permissions">Per seguretat, està deshabilitada la SD i el microfon, habiliti els dos.</string>
+
     <!--adapter menu -->
     <string name="select">Selecciona Acció</string>
     <string name="download">Descarregar</string>
     <string name="delete">Esborrar</string>
+    <string name="open">Obrir</string>
 
     <!-- Enregistrant -->
     <string name="start">Enregistrant</string>
     <string name="stop">Parant registre</string>
+    <string name="multimedia">Multimedia</string>
+
+    <!-- -->
+    <string name="video_recording">Gravar video</string>
+    <string name="take_a_photo">Fer foto</string>
+
 </resources>

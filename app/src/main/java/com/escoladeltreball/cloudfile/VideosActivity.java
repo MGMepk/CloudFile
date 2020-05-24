@@ -1,23 +1,19 @@
 package com.escoladeltreball.cloudfile;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.renderscript.Sampler;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-
-import com.escoladeltreball.cloudfile.Upload;
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -100,26 +96,39 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
         uploadUri = uploadCurrent.getmUrl();
         Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(uploadUri));
         intent.setDataAndType(Uri.parse(uploadCurrent.getmUrl()), "video/mp4");
-        intent.setClass(this,  FullScreenImageActivity.class);
+        intent.setClass(this, FullScreenImageActivity.class);
         intent.putExtra("video", uploadUri);
 
         startActivity(intent);
 
-        Toast.makeText(this, "Imagen:" + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
+        String op = getString(R.string.open);
+        Toast.makeText(this, op + ": " + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDeleteClick(int position) {
-        Upload selectedItem = mUploads.get(position);
+        final Upload selectedItem = mUploads.get(position);
         final String selectedKey = selectedItem.getKey();
-        StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
-        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(VideosActivity.this, "Borrado", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.delete_message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mDatabaseRef.child(selectedKey).removeValue();
+                                Toast.makeText(VideosActivity.this, R.string.item_deleted, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override

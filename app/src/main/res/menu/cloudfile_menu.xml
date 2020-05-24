@@ -10,11 +10,11 @@
         <menu>
             <item
                 android:id="@+id/image_uploads"
-                android:title="@string/video"
+                android:title="@string/images"
                 />
             <item
                 android:id="@+id/video_uploads"
-                android:title="@string/images"
+                android:title="@string/video"
                 />
             <item
                 android:id="@+id/audio_uploads"

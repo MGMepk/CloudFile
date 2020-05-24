@@ -6,70 +6,26 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <TextView
+
+    <Button
+        android:id="@+id/button_multimedia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/linear_layout_main"
         android:layout_centerHorizontal="true"
-        android:text="@string/choose"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
+        android:layout_centerVertical="true"
+        android:layout_margin="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/multimedia" />
 
-
-    <LinearLayout
-        android:id="@+id/linear_layout_main"
+    <Button
+        android:id="@+id/button_documents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/button_images"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/ic_camera_alt_black_24dp"
-                android:contentDescription="@string/images"
-                android:gravity="center_horizontal" />
-
-            <ImageButton
-                android:id="@+id/button_audio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/ic_queue_music_black_24dp"
-                android:contentDescription="@string/audio"
-                android:gravity="center_horizontal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/button_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/videocam"
-                android:contentDescription="@string/video"
-                android:gravity="center_horizontal" />
-
-            <ImageButton
-                android:id="@+id/button_documents"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/document"
-                android:contentDescription="@string/docs"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
-
-    </LinearLayout>
+        android:layout_below="@id/button_multimedia"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/docs"
+        android:gravity="center_horizontal"
+        android:text="@string/docs" />
 
 </RelativeLayout>
