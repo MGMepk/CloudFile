@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CloudFile</string>
     <string name="docs">Documents</string>
     <string name="audio">Audio</string>
     <string name="upload">Pujar</string>
