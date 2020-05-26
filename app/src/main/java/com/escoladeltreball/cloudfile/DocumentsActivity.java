@@ -1,6 +1,7 @@
 package com.escoladeltreball.cloudfile;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -94,7 +95,14 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     @Override
     public void onDownloadClick(int position) {
+        final Upload selectedItem = mUploads.get(position);
+        final String selectedKey = selectedItem.getKey();
 
+        Intent intent = new Intent(this, DocumentEditor.class);
+        intent.putExtra("name", selectedItem.getmName());
+        intent.putExtra("uri", selectedItem.getmUrl());
+        intent.putExtra("key", selectedKey);
+        startActivity(intent);
     }
 
     @Override

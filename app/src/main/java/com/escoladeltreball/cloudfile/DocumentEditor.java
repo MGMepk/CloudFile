@@ -39,6 +39,7 @@ public class DocumentEditor extends AppCompatActivity {
                 dName.setText(String.valueOf(extras.get("name")));
                 FileReader reader = new FileReader(String.valueOf(extras.get("uri")));
                 dContent.setText(reader.read());
+                reader.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,7 +49,7 @@ public class DocumentEditor extends AppCompatActivity {
             public void onClick(View v) {
                 saveDocument();
                 String saving = getString(R.string.saving);
-                Toast.makeText(DocumentEditor.this, saving+ ": " + dName.getText().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DocumentEditor.this, saving + ": " + dName.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
