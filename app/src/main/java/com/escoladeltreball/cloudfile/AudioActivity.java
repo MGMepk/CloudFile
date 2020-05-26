@@ -112,15 +112,16 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     public void onDownloadClick(int position) {
         Upload selectedItem = mUploads.get(position);
         String url = selectedItem.getmUrl();
-        StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+        final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
         audioRef.getDownloadUrl();
 
         try {
-            File localFile = File.createTempFile("audios", "mp3");
+            File localFile = File.createTempFile(selectedItem.getmName(), ".mp3");
             audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
+                    audioRef.getDownloadUrl();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -170,5 +171,11 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
         mediaPlayer.release();
         mediaPlayer = null;
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mediaPlayer = new MediaPlayer();
     }
 }

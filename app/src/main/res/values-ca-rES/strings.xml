@@ -37,5 +37,7 @@
     <!-- -->
     <string name="video_recording">Gravar video</string>
     <string name="take_a_photo">Fer foto</string>
+    <string name="save">Guardar</string>
+    <string name="file_name">Nom de l\'arxiu</string>
 
 </resources>

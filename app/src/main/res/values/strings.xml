@@ -36,5 +36,8 @@
     <!-- -->
     <string name="video_recording">Video recording</string>
     <string name="take_a_photo">Take a photo</string>
+    <string name="save">Save</string>
+    <string name="file_name">File Name</string>
+    <string name="document_content">Document content</string>
 
 </resources>

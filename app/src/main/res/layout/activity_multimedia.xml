@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:padding="16dp"
     tools:context=".MultimediaMain">
 
@@ -35,10 +36,15 @@
         android:id="@+id/audio_file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/button_choose_video"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/button_choose_video"
-        android:autofillHints=""
+        android:background="@color/white"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:hint="@string/file_name"
         android:inputType="text"
-        tools:ignore="LabelFor" />
+        tools:ignore="Autofill,LabelFor" />
 
     <TextView
         android:id="@+id/info_audio"
@@ -47,6 +53,7 @@
         android:layout_above="@id/progress_bar"
         android:layout_below="@id/audio_file_name"
         android:layout_marginTop="15dp"
+        android:textColor="@color/white"
         android:visibility="invisible" />
 
     <VideoView

@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".FullScreenImageActivity">
 
     <ImageView
+        android:id="@+id/fullScreenImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fullScreenImageView"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 
     <VideoView
+        android:id="@+id/videoRepro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/videoRepro"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

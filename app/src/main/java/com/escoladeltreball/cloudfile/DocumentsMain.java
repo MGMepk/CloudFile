@@ -172,11 +172,14 @@ public class DocumentsMain extends AppCompatActivity {
 
             if (!getFileExtension(docUri).equals("pdf")) {
                 Intent intent = new Intent(this, DocumentEditor.class);
+                intent.putExtra("name", docName.getText().toString());
+                intent.putExtra("uri", docUri);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, R.string.non_editable, Toast.LENGTH_LONG).show();
             }
         } else {
+            startActivity(new Intent(this, DocumentEditor.class));
             Toast.makeText(this, R.string.new_doc, Toast.LENGTH_LONG).show();
         }
 

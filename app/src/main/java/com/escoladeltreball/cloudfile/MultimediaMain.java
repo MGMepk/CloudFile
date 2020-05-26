@@ -78,7 +78,8 @@ public class MultimediaMain extends AppCompatActivity {
     File audiofile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     File sampleDir = Environment.getExternalStorageDirectory();
-    File soundDir = new File(sampleDir, "CloudFile_records");
+    File appDir = new File(sampleDir, "CloudFile");
+    File soundDir = new File(appDir, "Records");
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
 
