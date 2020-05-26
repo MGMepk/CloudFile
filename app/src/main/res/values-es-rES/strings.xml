@@ -38,5 +38,7 @@
     <string name="take_a_photo">Tomar una foto</string>
     <string name="save">Guardar</string>
     <string name="file_name">Nombre del archivo</string>
+    <string name="document_content">Contenido del documento</string>
+    <string name="saving">Guardando</string>
 
 </resources>

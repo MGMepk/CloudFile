@@ -1,7 +1,6 @@
 package com.escoladeltreball.cloudfile;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -36,6 +35,7 @@ public class DocumentEditor extends AppCompatActivity {
             Intent intent = getIntent();
             if (intent != null) {
                 Bundle extras = intent.getExtras();
+                assert extras != null;
                 dName.setText(String.valueOf(extras.get("name")));
                 FileReader reader = new FileReader(String.valueOf(extras.get("uri")));
                 dContent.setText(reader.read());
@@ -47,7 +47,8 @@ public class DocumentEditor extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveDocument();
-                Toast.makeText(DocumentEditor.this, "Guardando: " + dName.getText().toString(), Toast.LENGTH_SHORT).show();
+                String saving = getString(R.string.saving);
+                Toast.makeText(DocumentEditor.this, saving+ ": " + dName.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

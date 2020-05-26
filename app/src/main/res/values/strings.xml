@@ -39,5 +39,6 @@
     <string name="save">Save</string>
     <string name="file_name">File Name</string>
     <string name="document_content">Document content</string>
+    <string name="saving">Saving</string>
 
 </resources>
