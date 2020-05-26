@@ -62,6 +62,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
                 mUploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
+                    assert upload != null;
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
@@ -87,9 +88,6 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     @Override
     public void onItemClick(int position) {
-        Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmUrl();
-
 
     }
 
