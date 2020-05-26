@@ -3,6 +3,7 @@ package com.escoladeltreball.cloudfile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,13 +11,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class DocumentEditor extends AppCompatActivity {
-
+    String TAG = "reader";
     EditText dName;
     EditText dContent;
     Button save;
@@ -37,9 +41,26 @@ public class DocumentEditor extends AppCompatActivity {
                 Bundle extras = intent.getExtras();
                 assert extras != null;
                 dName.setText(String.valueOf(extras.get("name")));
-                FileReader reader = new FileReader(String.valueOf(extras.get("uri")));
-                dContent.setText(reader.read());
-                reader.close();
+
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                FileReader reader = new FileReader(new File(String.valueOf(extras.get("uri"))));
+                Toast.makeText(this, "hola: " +String.valueOf(extras.get("uri")), Toast.LENGTH_SHORT).show();
+                BufferedReader in = null;
+                try {
+
+                    in = new BufferedReader(reader);
+                    while ((line = in.readLine()) != null) stringBuilder.append(line);
+                    in.close();
+                    reader.close();
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, e.getMessage() + " " + e.getCause());
+                } catch (IOException e) {
+                    Log.d(TAG, e.getMessage() + " " + e.getCause());
+                }
+
+                dContent.setText(stringBuilder.toString());
+
             }
         } catch (Exception e) {
             e.printStackTrace();
