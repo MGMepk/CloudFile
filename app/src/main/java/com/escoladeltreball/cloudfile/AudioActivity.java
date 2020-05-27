@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -69,6 +68,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
                 mUploads.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
+                    assert upload != null;
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
@@ -127,6 +127,10 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             extension = ".3gp";
         } else if (url.contains(".flac")) {
             extension = ".flac";
+        } else if (url.contains(".wav")) {
+            extension = ".wav";
+        } else if (url.contains(".ogg")){
+            extension = ".ogg";
         }
 
         File localFile = new File(rootPath, selectedItem.getmName() + extension);

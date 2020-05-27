@@ -366,7 +366,8 @@ public class MultimediaMain extends AppCompatActivity {
 
             String extension = getFileExtension(fileUri);
 
-            if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("png")) {
+            if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg")
+                    || extension.equalsIgnoreCase("png")) {
                 REFERENCE = "uploads/images";
                 mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
                 mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
@@ -379,7 +380,9 @@ public class MultimediaMain extends AppCompatActivity {
 
             }
 
-            if (extension.equalsIgnoreCase("3gpp") || extension.equalsIgnoreCase("mp3") || extension.equalsIgnoreCase("flac")) {
+            if (extension.equalsIgnoreCase("3gpp") || extension.equalsIgnoreCase("mp3")
+                    || extension.equalsIgnoreCase("flac") || extension.equalsIgnoreCase("wav")
+                    || extension.equalsIgnoreCase("ogg")) {
                 REFERENCE = "uploads/audio";
                 mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
                 mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
