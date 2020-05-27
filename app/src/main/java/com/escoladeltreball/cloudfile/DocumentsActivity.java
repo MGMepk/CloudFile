@@ -3,6 +3,7 @@ package com.escoladeltreball.cloudfile;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -13,15 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,13 +98,35 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     @Override
     public void onDownloadClick(int position) {
         final Upload selectedItem = mUploads.get(position);
-        final String selectedKey = selectedItem.getKey();
+        String url = selectedItem.getmUrl();
+        final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
 
-        Intent intent = new Intent(this, DocumentEditor.class);
-        intent.putExtra("name", selectedItem.getmName());
-        intent.putExtra("uri", selectedItem.getmUrl());
-        intent.putExtra("key", selectedKey);
-        startActivity(intent);
+        File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
+        if (!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        String extension = "";
+
+        if (url.contains(".pdf")) {
+            extension = ".pdf";
+        } else if (url.contains(".txt")) {
+            extension = ".txt";
+        }
+
+        File localFile = new File(rootPath, selectedItem.getmName() + extension);
+        audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(DocumentsActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(DocumentsActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

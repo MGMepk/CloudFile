@@ -41,4 +41,8 @@
     <string name="document_content">Document content</string>
     <string name="saving">Saving</string>
 
+    <!-- Download Task -->
+    <string name="file_success"> File downloaded successful</string>
+    <string name="file_fail">Error at download file</string>
+
 </resources>

@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -110,30 +112,36 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onDownloadClick(int position) {
-        Upload selectedItem = mUploads.get(position);
+        final Upload selectedItem = mUploads.get(position);
         String url = selectedItem.getmUrl();
         final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
-        audioRef.getDownloadUrl();
 
-        try {
-            File localFile = File.createTempFile(selectedItem.getmName(), ".mp3");
-            audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    audioRef.getDownloadUrl();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+        File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
+        if (!rootPath.exists()) {
+            rootPath.mkdirs();
         }
 
-        Toast.makeText(AudioActivity.this, "No implementado: " + audioRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
+        String extension = ".mp3";
+
+        if (url.contains(".3gp")) {
+            extension = ".3gp";
+        } else if (url.contains(".flac")) {
+            extension = ".flac";
+        }
+
+        File localFile = new File(rootPath, selectedItem.getmName() + extension);
+        audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(AudioActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(AudioActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

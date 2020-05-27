@@ -53,8 +53,6 @@ public class DocumentEditor extends AppCompatActivity {
                     while ((line = in.readLine()) != null) stringBuilder.append(line);
                     in.close();
                     reader.close();
-                } catch (FileNotFoundException e) {
-                    Log.d(TAG, e.getMessage() + " " + e.getCause());
                 } catch (IOException e) {
                     Log.d(TAG, e.getMessage() + " " + e.getCause());
                 }

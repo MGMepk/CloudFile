@@ -40,5 +40,7 @@
     <string name="file_name">Nombre del archivo</string>
     <string name="document_content">Contenido del documento</string>
     <string name="saving">Guardando</string>
+    <string name="file_success">Archivo descargado con exito</string>
+    <string name="file_fail">Error al descargar el archivo</string>
 
 </resources>
