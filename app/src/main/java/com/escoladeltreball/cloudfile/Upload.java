@@ -2,6 +2,7 @@ package com.escoladeltreball.cloudfile;
 
 import com.google.firebase.database.Exclude;
 
+
 public class Upload {
     private String mName;
     private String mUrl;
