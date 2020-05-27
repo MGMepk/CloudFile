@@ -1,8 +1,11 @@
 package com.escoladeltreball.cloudfile;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -10,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +45,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     private ValueEventListener mDBListener;
 
     private List<Upload> mUploads;
+    private static final int MY_PERMISSIONS_REQUESTS = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,28 +102,55 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     @Override
     public void onDownloadClick(int position) {
-        final Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getUrl();
-        final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
-        if (!rootPath.exists()) {
-            rootPath.mkdirs();
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                try {
+                    final Upload selectedItem = mUploads.get(position);
+                    String url = selectedItem.getUrl();
+                    final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+
+                    File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
+                    if (!rootPath.exists()) {
+                        rootPath.mkdirs();
+                    }
+
+                    File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
+                    audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(DocumentsActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(DocumentsActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Download", e.getMessage() + " " + e.getCause());
+                }
+            }
         }
 
-        File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
-        audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(DocumentsActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(DocumentsActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
