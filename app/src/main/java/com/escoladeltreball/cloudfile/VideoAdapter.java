@@ -94,10 +94,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle(R.string.select);
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, R.string.open);
+            MenuItem download = menu.add(Menu.NONE, 1, 1, R.string.download);
             MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
-            doWhatever.setOnMenuItemClickListener(this);
+            download.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 
@@ -108,7 +108,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
                 if (position != RecyclerView.NO_POSITION) {
                     switch (item.getItemId()) {
                         case 1:
-                            mListener.onOpenClick(position);
+                            mListener.onDownloadClick(position);
                             return true;
                         case 2:
                             mListener.onDeleteClick(position);
@@ -123,7 +123,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
     public interface OnItemClickListener {
         void onItemClick(int position);
 
-        void onOpenClick(int position);
+        void onDownloadClick(int position);
 
         void onDeleteClick(int position);
     }

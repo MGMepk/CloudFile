@@ -1,11 +1,14 @@
 package com.escoladeltreball.cloudfile;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -93,6 +96,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     @Override
     public void onItemClick(int position) {
+        final Upload selectedItem = mUploads.get(position);
         try {
             String url = mUploads.get(position).getmUrl();
             if (mediaPlayer.isPlaying()) {
@@ -104,7 +108,8 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             mediaPlayer.prepare();
             mediaPlayer.start();
             String playing = getString(R.string.playing_pos);
-            Toast.makeText(this, playing + " " + position, Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, playing + " " + selectedItem.getmName(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,19 +126,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             rootPath.mkdirs();
         }
 
-        String extension = ".mp3";
-
-        if (url.contains(".3gp")) {
-            extension = ".3gp";
-        } else if (url.contains(".flac")) {
-            extension = ".flac";
-        } else if (url.contains(".wav")) {
-            extension = ".wav";
-        } else if (url.contains(".ogg")){
-            extension = ".ogg";
-        }
-
-        File localFile = new File(rootPath, selectedItem.getmName() + extension);
+        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -175,6 +168,16 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
                 .show();
 
 
+    }
+
+    private String getFileExtension(String url) {
+        String ext = url;
+        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        extension = extension.substring(0, extension.indexOf("?"));
+        if (extension.equals("oga")) {
+            extension = "ogg";
+        }
+        return extension;
     }
 
     @Override

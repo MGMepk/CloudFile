@@ -170,7 +170,7 @@ public class DocumentsMain extends AppCompatActivity {
 
         if (docUri != null) {
 
-            if (!getFileExtension(docUri).equals("pdf")) {
+            if (getFileExtension(docUri).equals("txt")) {
                 Intent intent = new Intent(this, DocumentEditor.class);
                 intent.putExtra("name", docName.getText().toString());
                 intent.putExtra("uri", docUri.getPath());

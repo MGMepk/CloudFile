@@ -106,15 +106,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
             rootPath.mkdirs();
         }
 
-        String extension = "";
-
-        if (url.contains(".pdf")) {
-            extension = ".pdf";
-        } else if (url.contains(".txt")) {
-            extension = ".txt";
-        }
-
-        File localFile = new File(rootPath, selectedItem.getmName() + extension);
+        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -154,5 +146,12 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
 
+    }
+
+    private String getFileExtension(String url) {
+        String ext = url;
+        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        extension = extension.substring(0, extension.indexOf("?"));
+        return extension;
     }
 }

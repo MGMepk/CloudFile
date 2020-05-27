@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -14,15 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,24 +89,43 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this, "Posició:" + position, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onOpenClick(int position) {
-
         Upload uploadCurrent = mUploads.get(position);
         uploadUri = uploadCurrent.getmUrl();
         Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(uploadUri));
         intent.setDataAndType(Uri.parse(uploadCurrent.getmUrl()), "video/mp4");
         intent.setClass(this, FullScreenImageActivity.class);
         intent.putExtra("video", uploadUri);
-
         startActivity(intent);
 
         String op = getString(R.string.open);
         Toast.makeText(this, op + ": " + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onDownloadClick(int position) {
+        final Upload selectedItem = mUploads.get(position);
+        String url = selectedItem.getmUrl();
+        final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+
+        File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
+        if (!rootPath.exists()) {
+            rootPath.mkdirs();
+        }
+
+        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
+        audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(VideosActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(VideosActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -129,6 +152,13 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    private String getFileExtension(String url) {
+        String ext = url;
+        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        extension = extension.substring(0, extension.indexOf("?"));
+        return extension;
     }
 
     @Override

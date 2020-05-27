@@ -52,18 +52,15 @@ import java.util.Date;
 
 public class MultimediaMain extends AppCompatActivity {
     private static final String TAG = "test";
-    private static String REFERENCE = "uploads/";
+    private static final String REFERENCE = "uploads/";
+    private static final String AUDIO = REFERENCE + "audio";
+    private static final String VIDEO = REFERENCE + "videos";
+    private static final String IMAGES = REFERENCE + "images";
     private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
 
-    private ImageButton chooserImage;
-    private ImageButton chooserVideo;
-    private ImageButton chooserAudio;
-    private Button upload;
-    private ImageButton record;
-    private ImageButton videoRecord;
-    private ImageButton takePhoto;
+
     private EditText fileName;
     private TextView txtInfo;
 
@@ -75,7 +72,7 @@ public class MultimediaMain extends AppCompatActivity {
     private Uri fileUri;
     MediaRecorder recorder;
     MediaPlayer player;
-    File audiofile = null;
+    File audioFile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     File sampleDir = Environment.getExternalStorageDirectory();
     File appDir = new File(sampleDir, "CloudFile");
@@ -90,18 +87,18 @@ public class MultimediaMain extends AppCompatActivity {
         this.setTitle(R.string.multimedia);
 
         //choosers
-        chooserAudio = findViewById(R.id.button_choose_audio);
-        chooserVideo = findViewById(R.id.button_choose_video);
-        chooserImage = findViewById(R.id.button_choose_image);
+        ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
+        ImageButton chooserVideo = findViewById(R.id.button_choose_video);
+        ImageButton chooserImage = findViewById(R.id.button_choose_image);
 
         // upload button
-        upload = findViewById(R.id.upload_audio);
+        Button upload = findViewById(R.id.upload_audio);
         fileName = findViewById(R.id.audio_file_name);
 
         //Recorders
-        record = findViewById(R.id.record);
-        videoRecord = findViewById(R.id.video_record);
-        takePhoto = findViewById(R.id.photo_shot);
+        ImageButton record = findViewById(R.id.record);
+        ImageButton videoRecord = findViewById(R.id.video_record);
+        ImageButton takePhoto = findViewById(R.id.photo_shot);
 
 
         mVideoView = findViewById(R.id.video_view);
@@ -147,10 +144,10 @@ public class MultimediaMain extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        startRecord(v);
+                        startRecord();
                         break;
                     case MotionEvent.ACTION_UP:
-                        stopRecord(v);
+                        stopRecord();
                         break;
                     default:
                         break;
@@ -187,7 +184,7 @@ public class MultimediaMain extends AppCompatActivity {
 
     }
 
-    private void startRecord(View v) {
+    private void startRecord() {
         String estat = Environment.getExternalStorageState();
         // comprova si hi ha SD i si puc escriure en ella
         if (estat.equals(Environment.MEDIA_MOUNTED)) {
@@ -211,11 +208,9 @@ public class MultimediaMain extends AppCompatActivity {
                                     Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
 
                 } else {
-                    Toast.makeText(this, "demana permis, no rationale ", Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
-                    // The callback method gets the result of the request.
                 }
 
             } else {
@@ -223,12 +218,12 @@ public class MultimediaMain extends AppCompatActivity {
                     if (!soundDir.exists()) {
                         soundDir.mkdirs();
                     }
-                    audiofile = File.createTempFile("sound", ".3gp", soundDir);
+                    audioFile = File.createTempFile("sound", ".ogg", soundDir);
                     recorder = new MediaRecorder();
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                     recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                    recorder.setOutputFile(audiofile.getAbsolutePath());
+                    recorder.setOutputFile(audioFile.getAbsolutePath());
                     recorder.prepare();
                     recorder.start();
                 } catch (IllegalStateException e) {
@@ -242,7 +237,7 @@ public class MultimediaMain extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
                     Toast.makeText(this, "Exception: missatge: " + e.getMessage() + ", causa: " + e.getCause() + ", " +
-                            audiofile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                            audioFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -252,12 +247,12 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
 
-    private void stopRecord(View v) {
+    private void stopRecord() {
         try {
             recorder.stop();
             recorder.release();
             txtInfo.setVisibility(TextView.VISIBLE);
-            txtInfo.setText(audiofile.getAbsolutePath());
+            txtInfo.setText(audioFile.getAbsolutePath());
             addRecordingToMediaLibrary();
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -274,10 +269,10 @@ public class MultimediaMain extends AppCompatActivity {
         try {
             ContentValues values = new ContentValues(4);
             long current = System.currentTimeMillis();
-            values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
+            values.put(MediaStore.Audio.Media.TITLE, "audio" + audioFile.getName());
             values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
-            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
-            values.put(MediaStore.Audio.Media.DATA, audiofile.getAbsolutePath());
+            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/ogg");
+            values.put(MediaStore.Audio.Media.DATA, audioFile.getAbsolutePath());
             ContentResolver contentResolver = getContentResolver();
 
             Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -366,26 +361,25 @@ public class MultimediaMain extends AppCompatActivity {
 
             String extension = getFileExtension(fileUri);
 
-            if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg")
-                    || extension.equalsIgnoreCase("png")) {
-                REFERENCE = "uploads/images";
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+            ContentResolver cR = getContentResolver();
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            String mimeType = mime.getMimeTypeFromExtension(extension);
+            String[] type = mimeType.split("/");
+
+            if (type[0].equals("image")) {
+                mStorageRef = FirebaseStorage.getInstance().getReference(IMAGES);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(IMAGES);
 
             }
-            if (extension.equalsIgnoreCase("mp4")) {
-                REFERENCE = "uploads/videos";
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+            if (type[0].equals("video")) {
+                mStorageRef = FirebaseStorage.getInstance().getReference(VIDEO);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(VIDEO);
 
             }
 
-            if (extension.equalsIgnoreCase("3gpp") || extension.equalsIgnoreCase("mp3")
-                    || extension.equalsIgnoreCase("flac") || extension.equalsIgnoreCase("wav")
-                    || extension.equalsIgnoreCase("ogg")) {
-                REFERENCE = "uploads/audio";
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+            if (type[0].equals("audio")) {
+                mStorageRef = FirebaseStorage.getInstance().getReference(AUDIO);
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(AUDIO);
 
             }
 

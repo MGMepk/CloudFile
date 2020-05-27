@@ -39,7 +39,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.textViewName.setText(uploadCurrent.getmName());
         Picasso.with(mContext)
                 .load(uploadCurrent.getmUrl())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.insert_photo)
                 .fit()
                 .centerCrop()
                 .into(holder.imageView);
@@ -77,10 +77,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle(R.string.select);
-            MenuItem openImg = menu.add(Menu.NONE, 1, 1, R.string.open);
+            MenuItem download = menu.add(Menu.NONE, 1, 1, R.string.download);
             MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
-            openImg.setOnMenuItemClickListener(this);
+            download.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 
@@ -91,7 +91,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 if (position != RecyclerView.NO_POSITION) {
                     switch (item.getItemId()) {
                         case 1:
-                            mListener.onOpenClick(position);
+                            mListener.onDownloadClick(position);
                             return true;
                         case 2:
                             mListener.onDeleteClick(position);
@@ -106,7 +106,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public interface OnItemClickListener {
         void onItemClick(int position);
 
-        void onOpenClick(int position);
+        void onDownloadClick(int position);
 
         void onDeleteClick(int position);
     }
