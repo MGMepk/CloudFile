@@ -2,9 +2,6 @@ package com.escoladeltreball.cloudfile;
 
 import com.google.firebase.database.Exclude;
 
-/*
- / Aquesta classe serà la que crei els objectes que pujarem a Firebase.
- */
 public class Upload {
     private String mName;
     private String mUrl;
@@ -21,19 +18,19 @@ public class Upload {
         this.mUrl = url;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String mName) {
+    public void setName(String mName) {
         this.mName = mName;
     }
 
-    public String getmUrl() {
+    public String getUrl() {
         return mUrl;
     }
 
-    public void setmUrl(String mUrl) {
+    public void setUrl(String mUrl) {
         this.mUrl = mUrl;
     }
 

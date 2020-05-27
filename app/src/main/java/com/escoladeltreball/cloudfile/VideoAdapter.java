@@ -38,8 +38,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getmName());
-        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(uploadCurrent.getmUrl(),
+        holder.textViewName.setText(uploadCurrent.getName());
+        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(uploadCurrent.getUrl(),
                 MediaStore.Images.Thumbnails.MINI_KIND);
         holder.imageView.setImageBitmap(thumb);
 

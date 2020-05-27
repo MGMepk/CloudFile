@@ -36,9 +36,6 @@ public class DocumentsMain extends AppCompatActivity {
     private static final int PICK_DOC_REQUEST = 3;
     private static final String REFERENCE = "uploads/documents";
 
-    private ImageButton chooser;
-    private Button upload;
-    private ImageButton editor;
     private EditText docName;
     private TextView documentView;
     private ProgressBar mProgressBar;
@@ -53,9 +50,9 @@ public class DocumentsMain extends AppCompatActivity {
         setContentView(R.layout.activity_documents_main);
         this.setTitle(R.string.docs);
 
-        chooser = findViewById(R.id.button_choose_doc);
-        upload = findViewById(R.id.upload_doc);
-        editor = findViewById(R.id.edit_doc);
+        ImageButton chooser = findViewById(R.id.button_choose_doc);
+        Button upload = findViewById(R.id.upload_doc);
+        ImageButton editor = findViewById(R.id.edit_doc);
         docName = findViewById(R.id.document_name);
         documentView = findViewById(R.id.document_view);
         mProgressBar = findViewById(R.id.progress_bar);
@@ -115,7 +112,7 @@ public class DocumentsMain extends AppCompatActivity {
     private void uploadFile() {
         if (docUri != null) {
             long yourmilliseconds = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss", java.util.Locale.getDefault());
             Date resultdate = new Date(yourmilliseconds);
 
             StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + docName.getText().toString().trim() + "." + getFileExtension(docUri));

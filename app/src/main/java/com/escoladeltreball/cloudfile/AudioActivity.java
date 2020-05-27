@@ -1,14 +1,11 @@
 package com.escoladeltreball.cloudfile;
 
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -98,7 +95,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     public void onItemClick(int position) {
         final Upload selectedItem = mUploads.get(position);
         try {
-            String url = mUploads.get(position).getmUrl();
+            String url = mUploads.get(position).getUrl();
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.release();
             }
@@ -109,7 +106,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             mediaPlayer.start();
             String playing = getString(R.string.playing_pos);
 
-            Toast.makeText(this, playing + " " + selectedItem.getmName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, playing + " " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,7 +115,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     @Override
     public void onDownloadClick(int position) {
         final Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmUrl();
+        String url = selectedItem.getUrl();
         final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
 
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
@@ -126,7 +123,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             rootPath.mkdirs();
         }
 
-        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
+        File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -153,7 +150,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getUrl());
                         audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -171,8 +168,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     }
 
     private String getFileExtension(String url) {
-        String ext = url;
-        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        String extension = url.substring(url.lastIndexOf(".") + 1);
         extension = extension.substring(0, extension.indexOf("?"));
         if (extension.equals("oga")) {
             extension = "ogg";

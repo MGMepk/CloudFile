@@ -38,7 +38,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
     private List<Upload> mUploads;
-    private String uploadUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,22 +90,21 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     @Override
     public void onItemClick(int position) {
         Upload uploadCurrent = mUploads.get(position);
-        uploadUri = uploadCurrent.getmUrl();
+        String uploadUri = uploadCurrent.getUrl();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setClass(this, FullScreenImageActivity.class);
         intent.putExtra("image", uploadUri);
         startActivity(intent);
 
         String open = getString(R.string.open);
-
-        Toast.makeText(this, open + ": " + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, open + ": " + uploadCurrent.getName(), Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onDownloadClick(int position) {
         final Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmUrl();
+        String url = selectedItem.getUrl();
         final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
 
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
@@ -113,7 +112,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
             rootPath.mkdirs();
         }
 
-        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
+        File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -141,7 +140,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getUrl());
                         audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -157,8 +156,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     }
 
     private String getFileExtension(String url) {
-        String ext = url;
-        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        String extension = url.substring(url.lastIndexOf(".") + 1);
         extension = extension.substring(0, extension.indexOf("?"));
         return extension;
     }

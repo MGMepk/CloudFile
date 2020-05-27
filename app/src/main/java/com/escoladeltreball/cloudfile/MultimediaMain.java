@@ -185,9 +185,8 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     private void startRecord() {
-        String estat = Environment.getExternalStorageState();
-        // comprova si hi ha SD i si puc escriure en ella
-        if (estat.equals(Environment.MEDIA_MOUNTED)) {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
             txtInfo.setText("");
             int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -195,7 +194,7 @@ public class MultimediaMain extends AppCompatActivity {
             if (!(permCheck == PackageManager.PERMISSION_GRANTED) |
                     !(permCheck1 == PackageManager.PERMISSION_GRANTED)) {
 
-                //ara cal demanar permissos...
+                //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)))) {
 
@@ -236,7 +235,7 @@ public class MultimediaMain extends AppCompatActivity {
 
                 } catch (Exception e) {
                     Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
-                    Toast.makeText(this, "Exception: missatge: " + e.getMessage() + ", causa: " + e.getCause() + ", " +
+                    Toast.makeText(this, "Exception: message: " + e.getMessage() + ", cause: " + e.getCause() + ", " +
                             audioFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
 
@@ -356,14 +355,12 @@ public class MultimediaMain extends AppCompatActivity {
     private void uploadFile() {
         if (fileUri != null) {
             long yourmilliseconds = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss");
-            Date resultdate = new Date(yourmilliseconds);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss", java.util.Locale.getDefault());
+            Date resultDate = new Date(yourmilliseconds);
 
-            String extension = getFileExtension(fileUri);
-
-            ContentResolver cR = getContentResolver();
             MimeTypeMap mime = MimeTypeMap.getSingleton();
-            String mimeType = mime.getMimeTypeFromExtension(extension);
+            String mimeType = mime.getMimeTypeFromExtension(getFileExtension(fileUri));
+            assert mimeType != null;
             String[] type = mimeType.split("/");
 
             if (type[0].equals("image")) {
@@ -384,7 +381,7 @@ public class MultimediaMain extends AppCompatActivity {
             }
 
 
-            StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
+            StorageReference fileReference = mStorageRef.child(sdf.format(resultDate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
 
             fileReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override

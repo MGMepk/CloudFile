@@ -13,11 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class DocumentEditor extends AppCompatActivity {
     String TAG = "reader";
@@ -45,7 +43,6 @@ public class DocumentEditor extends AppCompatActivity {
                 StringBuilder stringBuilder = new StringBuilder();
                 String line;
                 FileReader reader = new FileReader(new File(String.valueOf(extras.get("uri"))));
-                Toast.makeText(this, "hola: " +String.valueOf(extras.get("uri")), Toast.LENGTH_SHORT).show();
                 BufferedReader in = null;
                 try {
 

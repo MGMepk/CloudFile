@@ -35,8 +35,8 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
     @Override
     public void onBindViewHolder(@NonNull AudioViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getmName());
-        holder.audioView.setText(uploadCurrent.getmUrl());
+        holder.textViewName.setText(uploadCurrent.getName());
+        holder.audioView.setText(uploadCurrent.getUrl());
 
     }
 

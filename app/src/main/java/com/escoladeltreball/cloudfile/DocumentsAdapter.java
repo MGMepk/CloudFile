@@ -34,8 +34,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Docu
     @Override
     public void onBindViewHolder(@NonNull DocumentsAdapter.DocumentViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getmName());
-        holder.docView.setText(uploadCurrent.getmUrl());
+        holder.textViewName.setText(uploadCurrent.getName());
+        holder.docView.setText(uploadCurrent.getUrl());
 
     }
 

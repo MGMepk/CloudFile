@@ -36,9 +36,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getmName());
+        holder.textViewName.setText(uploadCurrent.getName());
         Picasso.with(mContext)
-                .load(uploadCurrent.getmUrl())
+                .load(uploadCurrent.getUrl())
                 .placeholder(R.drawable.insert_photo)
                 .fit()
                 .centerCrop()

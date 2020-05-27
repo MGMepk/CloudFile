@@ -1,7 +1,6 @@
 package com.escoladeltreball.cloudfile;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -98,7 +97,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     @Override
     public void onDownloadClick(int position) {
         final Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmUrl();
+        String url = selectedItem.getUrl();
         final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
 
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
@@ -106,7 +105,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
             rootPath.mkdirs();
         }
 
-        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
+        File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -132,7 +131,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getUrl());
                         audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -149,8 +148,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     }
 
     private String getFileExtension(String url) {
-        String ext = url;
-        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        String extension = url.substring(url.lastIndexOf(".") + 1);
         extension = extension.substring(0, extension.indexOf("?"));
         return extension;
     }

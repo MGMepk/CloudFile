@@ -39,7 +39,6 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
     private List<Upload> mUploads;
-    private String uploadUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
+                    assert upload != null;
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
@@ -90,22 +90,22 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     @Override
     public void onItemClick(int position) {
         Upload uploadCurrent = mUploads.get(position);
-        uploadUri = uploadCurrent.getmUrl();
+        String uploadUri = uploadCurrent.getUrl();
         Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(uploadUri));
-        intent.setDataAndType(Uri.parse(uploadCurrent.getmUrl()), "video/mp4");
+        intent.setDataAndType(Uri.parse(uploadCurrent.getUrl()), "video/mp4");
         intent.setClass(this, FullScreenImageActivity.class);
         intent.putExtra("video", uploadUri);
         startActivity(intent);
 
         String op = getString(R.string.open);
-        Toast.makeText(this, op + ": " + uploadCurrent.getmName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, op + ": " + uploadCurrent.getName(), Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onDownloadClick(int position) {
         final Upload selectedItem = mUploads.get(position);
-        String url = selectedItem.getmUrl();
+        String url = selectedItem.getUrl();
         final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
 
         File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
@@ -113,7 +113,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
             rootPath.mkdirs();
         }
 
-        File localFile = new File(rootPath, selectedItem.getmName() + "." + getFileExtension(url));
+        File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
         audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
             @Override
@@ -139,7 +139,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getmUrl());
+                        StorageReference audioRef = mStorage.getReferenceFromUrl(selectedItem.getUrl());
                         audioRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -155,8 +155,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     }
 
     private String getFileExtension(String url) {
-        String ext = url;
-        String extension = ext.substring(ext.lastIndexOf(".") + 1);
+        String extension = url.substring(url.lastIndexOf(".") + 1);
         extension = extension.substring(0, extension.indexOf("?"));
         return extension;
     }
