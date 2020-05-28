@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -332,7 +333,7 @@ public class MultimediaMain extends AppCompatActivity {
     private void makePhoto(){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+            //startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
             photoFile = null;
             try {
                 photoFile = createImageFile();
@@ -343,8 +344,10 @@ public class MultimediaMain extends AppCompatActivity {
                 fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 Log.d(TAG, "takePhoto: " + fileUri + "\n"+ currentPhotoPath);
-                startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST2);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+
             }
+
         }
 
 
@@ -398,11 +401,35 @@ public class MultimediaMain extends AppCompatActivity {
             // mVideoView = (VideoView)findViewById(R.id.video_view);
             //mVideoView.setVideoURI(mImageUri);
         }
+
         if (requestCode == PICK_IMAGE_CAPTURE_REQUEST && resultCode == RESULT_OK) {
 
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
+            int targetW = 300;
+            int targetH = 300;
+
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+
+            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+            Log.d(TAG, "onActivityResult: "+scaleFactor+","+photoH+","+photoW);
+
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inPurgeable = true;
+
+
+            Log.d(TAG, "onActivityResult:a "+scaleFactor+","+photoH+","+photoW+ "..."+ currentPhotoPath);
+            Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+            mImageView.setImageBitmap(bitmap2);
+
 
         }
 
