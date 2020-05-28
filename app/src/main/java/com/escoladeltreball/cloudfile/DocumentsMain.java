@@ -1,9 +1,12 @@
 package com.escoladeltreball.cloudfile;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +22,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,7 +40,7 @@ import java.util.Date;
 public class DocumentsMain extends AppCompatActivity {
     private static final int PICK_DOC_REQUEST = 3;
     private static final String REFERENCE = "uploads/documents";
-
+    private static final int MY_PERMISSIONS_REQUESTS = 10;
     private EditText docName;
     private TextView documentView;
     private ProgressBar mProgressBar;
@@ -83,12 +88,31 @@ public class DocumentsMain extends AppCompatActivity {
     }
 
     private void openDocChooser() {
-        Intent intent = new Intent();
-        intent.setType("*/*");
-        String[] mimetypes = {"text/*", "application/pdf"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_DOC_REQUEST);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+
+                Intent intent = new Intent();
+                intent.setType("*/*");
+                String[] mimetypes = {"text/*", "application/pdf"};
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_DOC_REQUEST);
+            }
+        }
     }
 
     @Override
@@ -165,21 +189,39 @@ public class DocumentsMain extends AppCompatActivity {
 
     public void openEditorActivity() {
 
-        if (docUri != null) {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
 
-            if (getFileExtension(docUri).equals("txt")) {
-                Intent intent = new Intent(this, DocumentEditor.class);
-                intent.putExtra("name", docName.getText().toString());
-                intent.putExtra("uri", docUri.getPath());
-                startActivity(intent);
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
             } else {
-                Toast.makeText(this, R.string.non_editable, Toast.LENGTH_LONG).show();
-            }
-        } else {
-            startActivity(new Intent(this, DocumentEditor.class));
-            Toast.makeText(this, R.string.new_doc, Toast.LENGTH_LONG).show();
-        }
 
+                if (docUri != null) {
+
+                    if (getFileExtension(docUri).equals("txt")) {
+                        Intent intent = new Intent(this, DocumentEditor.class);
+                        intent.putExtra("name", docName.getText().toString());
+                        intent.putExtra("uri", docUri.getPath());
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, R.string.non_editable, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    startActivity(new Intent(this, DocumentEditor.class));
+                    Toast.makeText(this, R.string.new_doc, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     @Override

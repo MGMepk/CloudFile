@@ -200,7 +200,6 @@ public class MultimediaMain extends AppCompatActivity {
     private void startRecord() {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            txtInfo.setText("");
             int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -212,8 +211,6 @@ public class MultimediaMain extends AppCompatActivity {
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)))) {
 
                     Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
-
-                    txtInfo.setText(R.string.request_permissions);
 
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
