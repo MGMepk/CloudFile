@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -34,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +61,8 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
+    private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
+    private static final int PICK_IMAGE_CAPTURE_REQUEST2 = 5;
 
 
     private EditText fileName;
@@ -79,6 +83,8 @@ public class MultimediaMain extends AppCompatActivity {
     File soundDir = new File(appDir, "Records");
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+    String currentPhotoPath;
+    File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,7 @@ public class MultimediaMain extends AppCompatActivity {
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
+
 
         // upload button
         Button upload = findViewById(R.id.upload_audio);
@@ -135,6 +142,12 @@ public class MultimediaMain extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadFile();
+            }
+        });
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makePhoto();
             }
         });
 
@@ -316,6 +329,48 @@ public class MultimediaMain extends AppCompatActivity {
         txtInfo.setVisibility(TextView.INVISIBLE);
     }
 
+    private void makePhoto(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+            photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(photoFile != null){
+                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Log.d(TAG, "takePhoto: " + fileUri + "\n"+ currentPhotoPath);
+                startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST2);
+            }
+        }
+
+
+        mImageView.setVisibility(ImageView.VISIBLE);
+        mVideoView.setVisibility(VideoView.INVISIBLE);
+        txtInfo.setVisibility(TextView.INVISIBLE);
+
+    }
+
+    private File createImageFile() throws IOException{
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -343,6 +398,14 @@ public class MultimediaMain extends AppCompatActivity {
             // mVideoView = (VideoView)findViewById(R.id.video_view);
             //mVideoView.setVideoURI(mImageUri);
         }
+        if (requestCode == PICK_IMAGE_CAPTURE_REQUEST && resultCode == RESULT_OK) {
+
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mImageView.setImageBitmap(imageBitmap);
+
+        }
+
     }
 
     private String getFileExtension(Uri uri) {
