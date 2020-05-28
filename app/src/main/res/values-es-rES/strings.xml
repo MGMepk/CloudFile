@@ -8,10 +8,9 @@
     <string name="show_uploads">Mostrar</string>
     <string name="name">Nombre</string>
     <string name="record">Grabar</string>
-    <string name="sampleurl">sample Url</string>
+    <string name="sample_url">sample Url</string>
     <string name="choose_document">Documento</string>
     <string name="edit">Editar</string>
-    <string name="playing_pos">Reproduciendo posición:</string>
     <string name="playing">Reproduciendo</string>
     <string name="delete_message">¿Seguro que quieres borrar éste elemento?</string>
     <string name="item_deleted">Elemento Borrado</string>
@@ -40,7 +39,7 @@
     <string name="file_name">Nombre del archivo</string>
     <string name="document_content">Contenido del documento</string>
     <string name="saving">Guardando</string>
-    <string name="file_success">Archivo descargado con exito</string>
+    <string name="file_success">Archivo descargado con éxito</string>
     <string name="file_fail">Error al descargar el archivo</string>
 
 </resources>

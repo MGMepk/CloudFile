@@ -110,9 +110,9 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepare();
             mediaPlayer.start();
-            String playing = getString(R.string.playing_pos);
+            String playing = getString(R.string.playing);
 
-            Toast.makeText(this, playing + " " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, playing + ": " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }

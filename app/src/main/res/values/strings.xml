@@ -8,10 +8,9 @@
     <string name="show_uploads">Show Uploads</string>
     <string name="name">Name</string>
     <string name="record">Record</string>
-    <string name="sampleurl">sample Url</string>
+    <string name="sample_url">sample Url</string>
     <string name="choose_document">Document</string>
     <string name="edit">Edit</string>
-    <string name="playing_pos">Playing position:</string>
     <string name="playing">Playing</string>
     <string name="delete_message">Are you sure you want to delete this entry?</string>
     <string name="item_deleted">Deleted item</string>

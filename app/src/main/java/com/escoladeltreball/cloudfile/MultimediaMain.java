@@ -63,7 +63,6 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
-    private static final int PICK_IMAGE_CAPTURE_REQUEST2 = 5;
 
 
     private EditText fileName;
@@ -330,7 +329,7 @@ public class MultimediaMain extends AppCompatActivity {
         txtInfo.setVisibility(TextView.INVISIBLE);
     }
 
-    private void makePhoto(){
+    private void makePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
@@ -340,10 +339,10 @@ public class MultimediaMain extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(photoFile != null){
+            if (photoFile != null) {
                 fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takePhoto: " + fileUri + "\n"+ currentPhotoPath);
+                Log.d(TAG, "takePhoto: " + fileUri + "\n" + currentPhotoPath);
                 startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
 
             }
@@ -357,8 +356,8 @@ public class MultimediaMain extends AppCompatActivity {
 
     }
 
-    private File createImageFile() throws IOException{
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -371,7 +370,6 @@ public class MultimediaMain extends AppCompatActivity {
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
 
 
     @Override
@@ -417,16 +415,16 @@ public class MultimediaMain extends AppCompatActivity {
             int photoH = bmOptions.outHeight;
 
 
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
-            Log.d(TAG, "onActivityResult: "+scaleFactor+","+photoH+","+photoW);
+            Log.d(TAG, "onActivityResult: " + scaleFactor + "," + photoH + "," + photoW);
 
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inPurgeable = true;
 
 
-            Log.d(TAG, "onActivityResult:a "+scaleFactor+","+photoH+","+photoW+ "..."+ currentPhotoPath);
+            Log.d(TAG, "onActivityResult:a " + scaleFactor + "," + photoH + "," + photoW + "..." + currentPhotoPath);
             Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
             mImageView.setImageBitmap(bitmap2);
 
