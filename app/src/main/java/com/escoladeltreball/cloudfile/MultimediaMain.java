@@ -64,6 +64,7 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int PICK_VIDEO_REQUEST = 2;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
     private static final int PICK_IMAGE_CAPTURE_REQUEST2 = 5;
+    private static final int REQUEST_VIDEO_CAPTURE = 6;
 
 
     private EditText fileName;
@@ -85,7 +86,9 @@ public class MultimediaMain extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     String currentPhotoPath;
+    String currentVideoPath;
     File photoFile;
+    File videoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +155,13 @@ public class MultimediaMain extends AppCompatActivity {
             }
         });
 
+        videoRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeVideo();
+            }
+        });
+
 
         record.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -196,6 +206,46 @@ public class MultimediaMain extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void makeVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+
+            videoFile = null;
+            try {
+                videoFile = createVideoFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(videoFile != null){
+                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Log.d(TAG, "takeVideo: " + fileUri + "\n"+ currentPhotoPath);
+                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+
+            }
+
+        }
+        mImageView.setVisibility(ImageView.INVISIBLE);
+        mVideoView.setVisibility(VideoView.VISIBLE);
+        txtInfo.setVisibility(TextView.INVISIBLE);
+
+    }
+
+    private File createVideoFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String videoFileName = "MP4_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        File video = File.createTempFile(
+                videoFileName,
+                ".mp4",
+                storageDir
+        );
+
+
+        currentVideoPath = video.getAbsolutePath();
+        return video;
     }
 
     private void startRecord() {
@@ -430,8 +480,20 @@ public class MultimediaMain extends AppCompatActivity {
             Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
             mImageView.setImageBitmap(bitmap2);
 
+            galleryAddPic();
 
         }
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK  && data != null && data.getData() != null) {
+            fileUri = data.getData();
+            mVideoView.setVideoURI(fileUri);
+            MediaController mediaController = new MediaController(this);
+            mediaController.setAnchorView(mVideoView);
+            mVideoView.setMediaController(mediaController);
+            mVideoView.start();
+
+            galleryAddPic();
+        }
+
 
     }
 
@@ -440,6 +502,23 @@ public class MultimediaMain extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
+    private void galleryAddPic() {
+        try {
+
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            mediaScanIntent.setData(Uri.fromFile(f));
+            sendBroadcast(mediaScanIntent);
+            Log.d(TAG, "galleryAddPic: "+ "\n" + Uri.fromFile(f));
+
+
+        } catch (Exception e){
+            Log.d(TAG, "galleryAddPic: "+e.getMessage()+e.getCause());
+        }
+
+    }
+
 
 
     private void uploadFile() {
