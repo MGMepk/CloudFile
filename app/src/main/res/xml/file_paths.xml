@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
 
-    <external-path name="my_images" path="Android/data/com.escoladeltreball.cloudfile/files/Pictures" />
-    <external-path name="my_videos" path="Android/data/com.escoladeltreball.cloudfile/files/Movies" />
+    <external-path
+        name="my_images"
+        path="Android/data/com.escoladeltreball.cloudfile/files/Pictures" />
+    <external-path
+        name="my_videos"
+        path="Android/data/com.escoladeltreball.cloudfile/files/Movies" />
+    <external-path
+        name="my_records"
+        path="Android/data/com.escoladeltreball.cloudfile/files/Records" />
 
 </paths>

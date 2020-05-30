@@ -207,7 +207,6 @@ public class DocumentsMain extends AppCompatActivity {
             } else {
 
                 if (docUri != null) {
-
                     if (getFileExtension(docUri).equals("txt")) {
                         Intent intent = new Intent(this, DocumentEditor.class);
                         intent.putExtra("name", docName.getText().toString());

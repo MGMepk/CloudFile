@@ -30,7 +30,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DocumentsActivity extends AppCompatActivity implements DocumentsAdapter.OnItemClickListener {
@@ -124,15 +126,19 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
                 try {
                     final Upload selectedItem = mUploads.get(position);
                     String url = selectedItem.getUrl();
-                    final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+                    final StorageReference ref = mStorage.getReferenceFromUrl(url);
 
-                    File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
-                    if (!rootPath.exists()) {
-                        rootPath.mkdirs();
+                    File rootPath = new File(Environment.getExternalStorageDirectory(), "CloudFile");
+                    File docPath = new File(rootPath, "Documents");
+                    if (!docPath.exists()) {
+                        docPath.mkdirs();
                     }
 
-                    File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
-                    audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+                    String docFileName = "DOC_" + timeStamp + "_";
+
+                    File localFile = new File(docPath, docFileName + selectedItem.getName() + "." + getFileExtension(url));
+                    ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {

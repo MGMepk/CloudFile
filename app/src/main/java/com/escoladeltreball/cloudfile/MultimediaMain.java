@@ -1,8 +1,8 @@
 package com.escoladeltreball.cloudfile;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -63,7 +63,6 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
-    private static final int PICK_IMAGE_CAPTURE_REQUEST2 = 5;
     private static final int REQUEST_VIDEO_CAPTURE = 6;
 
 
@@ -80,9 +79,6 @@ public class MultimediaMain extends AppCompatActivity {
     MediaPlayer player;
     File audioFile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
-    File sampleDir = Environment.getExternalStorageDirectory();
-    File appDir = new File(sampleDir, "CloudFile");
-    File soundDir = new File(appDir, "Records");
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     String currentPhotoPath;
@@ -164,6 +160,7 @@ public class MultimediaMain extends AppCompatActivity {
 
 
         record.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -218,12 +215,11 @@ public class MultimediaMain extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(videoFile != null){
+            if (videoFile != null) {
                 fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takeVideo: " + fileUri + "\n"+ currentPhotoPath);
+                Log.d(TAG, "takeVideo: " + fileUri + "\n" + currentPhotoPath);
                 startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-
             }
 
         }
@@ -234,7 +230,7 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     private File createVideoFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
         String videoFileName = "MP4_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
         File video = File.createTempFile(
@@ -278,10 +274,7 @@ public class MultimediaMain extends AppCompatActivity {
 
             } else {
                 try {
-                    if (!soundDir.exists()) {
-                        soundDir.mkdirs();
-                    }
-                    audioFile = File.createTempFile("sound", ".ogg", soundDir);
+                    audioFile = File.createTempFile("sound", ".ogg", getExternalFilesDir(Environment.DIRECTORY_MUSIC));
                     recorder = new MediaRecorder();
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -291,14 +284,14 @@ public class MultimediaMain extends AppCompatActivity {
                     recorder.start();
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "startRecording1: " + e.getMessage() + e.getCause());
+                    Log.d(TAG, "startRecording: " + e.getMessage() + e.getCause());
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "sd card error: " + sampleDir + e.getMessage() + e.getCause());
+                    Log.d(TAG, "sd card error: " + e.getMessage() + e.getCause());
 
                 } catch (Exception e) {
-                    Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
+                    Log.d(TAG, "startRecording: " + e.getMessage() + e.getCause());
                     Toast.makeText(this, "Exception: message: " + e.getMessage() + ", cause: " + e.getCause() + ", " +
                             audioFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
@@ -316,7 +309,10 @@ public class MultimediaMain extends AppCompatActivity {
             recorder.release();
             txtInfo.setVisibility(TextView.VISIBLE);
             txtInfo.setText(audioFile.getAbsolutePath());
-            addRecordingToMediaLibrary();
+
+            mImageView.setVisibility(ImageView.INVISIBLE);
+            mVideoView.setVisibility(VideoView.INVISIBLE);
+            txtInfo.setVisibility(TextView.VISIBLE);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Log.d(TAG, "stopRecording: " + e.getMessage() + e.getCause());
@@ -327,28 +323,6 @@ public class MultimediaMain extends AppCompatActivity {
         }
         Toast.makeText(this, R.string.stop, Toast.LENGTH_SHORT).show();
     }
-
-    protected void addRecordingToMediaLibrary() {
-        try {
-            ContentValues values = new ContentValues(4);
-            long current = System.currentTimeMillis();
-            values.put(MediaStore.Audio.Media.TITLE, "audio" + audioFile.getName());
-            values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
-            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/ogg");
-            values.put(MediaStore.Audio.Media.DATA, audioFile.getAbsolutePath());
-            ContentResolver contentResolver = getContentResolver();
-
-            Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            fileUri = contentResolver.insert(base, values);
-
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "addRecordingToMediaLibrary: " + e.getCause() + ", " + e.getMessage() + ", ");
-            Toast.makeText(this, e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     private void openAudioChooser() {
         Intent intent = new Intent();
@@ -380,26 +354,24 @@ public class MultimediaMain extends AppCompatActivity {
         txtInfo.setVisibility(TextView.INVISIBLE);
     }
 
-    private void makePhoto(){
+    private void makePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            //startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
             photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(photoFile != null){
+            if (photoFile != null) {
                 fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takePhoto: " + fileUri + "\n"+ currentPhotoPath);
+                Log.d(TAG, "takePhoto: " + fileUri + "\n" + currentPhotoPath);
                 startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
 
             }
 
         }
-
 
         mImageView.setVisibility(ImageView.VISIBLE);
         mVideoView.setVisibility(VideoView.INVISIBLE);
@@ -407,8 +379,8 @@ public class MultimediaMain extends AppCompatActivity {
 
     }
 
-    private File createImageFile() throws IOException{
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -416,12 +388,9 @@ public class MultimediaMain extends AppCompatActivity {
                 ".jpg",
                 storageDir
         );
-
-
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
 
 
     @Override
@@ -430,7 +399,7 @@ public class MultimediaMain extends AppCompatActivity {
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
             fileUri = data.getData();
-            txtInfo.setText(fileUri.getPath());
+            txtInfo.setText(data.getData().getPath());
         }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
@@ -467,23 +436,23 @@ public class MultimediaMain extends AppCompatActivity {
             int photoH = bmOptions.outHeight;
 
 
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
-            Log.d(TAG, "onActivityResult: "+scaleFactor+","+photoH+","+photoW);
+            Log.d(TAG, "onActivityResult: " + scaleFactor + "," + photoH + "," + photoW);
 
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inPurgeable = true;
 
 
-            Log.d(TAG, "onActivityResult:a "+scaleFactor+","+photoH+","+photoW+ "..."+ currentPhotoPath);
+            Log.d(TAG, "onActivityResult:a " + scaleFactor + "," + photoH + "," + photoW + "..." + currentPhotoPath);
             Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
             mImageView.setImageBitmap(bitmap2);
 
             galleryAddPic();
 
         }
-        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK  && data != null && data.getData() != null) {
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             fileUri = data.getData();
             mVideoView.setVideoURI(fileUri);
             MediaController mediaController = new MediaController(this);
@@ -504,27 +473,20 @@ public class MultimediaMain extends AppCompatActivity {
 
     private void galleryAddPic() {
         try {
-
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             File f = new File(currentPhotoPath);
             mediaScanIntent.setData(Uri.fromFile(f));
             sendBroadcast(mediaScanIntent);
-            Log.d(TAG, "galleryAddPic: "+ "\n" + Uri.fromFile(f));
-
-
-        } catch (Exception e){
-            Log.d(TAG, "galleryAddPic: "+e.getMessage()+e.getCause());
+            Log.d(TAG, "galleryAddPic: " + "\n" + Uri.fromFile(f));
+        } catch (Exception e) {
+            Log.d(TAG, "galleryAddPic: " + e.getMessage() + e.getCause());
         }
-
     }
-
-
 
     private void uploadFile() {
         if (fileUri != null) {
-            long yourmilliseconds = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss", java.util.Locale.getDefault());
-            Date resultDate = new Date(yourmilliseconds);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
+            Date resultDate = new Date(System.currentTimeMillis());
 
             MimeTypeMap mime = MimeTypeMap.getSingleton();
             String mimeType = mime.getMimeTypeFromExtension(getFileExtension(fileUri));
