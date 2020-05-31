@@ -107,8 +107,8 @@ public class DocumentsMain extends AppCompatActivity {
 
                 Intent intent = new Intent();
                 intent.setType("*/*");
-                String[] mimetypes = {"text/*", "application/pdf"};
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                String[] mimeTypes = {"text/*", "application/pdf"};
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, PICK_DOC_REQUEST);
             }
@@ -121,7 +121,17 @@ public class DocumentsMain extends AppCompatActivity {
         if (requestCode == PICK_DOC_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
             docUri = data.getData();
-            documentView.setText(docUri.getPath());
+
+            if (docUri.getPath().contains("primary")) {
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                String[] audioPath = docUri.getPath().split(":");
+                path += "/" + audioPath[1];
+                documentView.setText(path);
+            } else {
+
+                documentView.setText(docUri.getPath());
+            }
+
 
         }
     }
@@ -135,11 +145,10 @@ public class DocumentsMain extends AppCompatActivity {
 
     private void uploadFile() {
         if (docUri != null) {
-            long yourmilliseconds = System.currentTimeMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss", java.util.Locale.getDefault());
-            Date resultdate = new Date(yourmilliseconds);
+            Date resultDate = new Date(System.currentTimeMillis());
 
-            StorageReference fileReference = mStorageRef.child(sdf.format(resultdate) + " - " + docName.getText().toString().trim() + "." + getFileExtension(docUri));
+            StorageReference fileReference = mStorageRef.child(sdf.format(resultDate) + " - " + docName.getText().toString().trim() + "." + getFileExtension(docUri));
 
             fileReference.putFile(docUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -210,7 +219,7 @@ public class DocumentsMain extends AppCompatActivity {
                     if (getFileExtension(docUri).equals("txt")) {
                         Intent intent = new Intent(this, DocumentEditor.class);
                         intent.putExtra("name", docName.getText().toString());
-                        intent.putExtra("uri", docUri.getPath());
+                        intent.putExtra("uri", documentView.getText().toString());
                         startActivity(intent);
                     } else {
                         Toast.makeText(this, R.string.non_editable, Toast.LENGTH_LONG).show();

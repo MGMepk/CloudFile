@@ -3,8 +3,11 @@ package com.escoladeltreball.cloudfile;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -37,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.loader.content.CursorLoader;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +53,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -274,7 +279,9 @@ public class MultimediaMain extends AppCompatActivity {
 
             } else {
                 try {
-                    audioFile = File.createTempFile("sound", ".ogg", getExternalFilesDir(Environment.DIRECTORY_MUSIC));
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+                    String audioFileName = "Sound_" + timeStamp + "_";
+                    audioFile = File.createTempFile(audioFileName, ".ogg", getExternalFilesDir(Environment.DIRECTORY_MUSIC));
                     recorder = new MediaRecorder();
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -309,10 +316,9 @@ public class MultimediaMain extends AppCompatActivity {
             recorder.release();
             txtInfo.setVisibility(TextView.VISIBLE);
             txtInfo.setText(audioFile.getAbsolutePath());
-
+            addRecordingToMediaLibrary();
             mImageView.setVisibility(ImageView.INVISIBLE);
             mVideoView.setVisibility(VideoView.INVISIBLE);
-            txtInfo.setVisibility(TextView.VISIBLE);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Log.d(TAG, "stopRecording: " + e.getMessage() + e.getCause());
@@ -399,7 +405,17 @@ public class MultimediaMain extends AppCompatActivity {
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
             fileUri = data.getData();
-            txtInfo.setText(data.getData().getPath());
+
+            if (fileUri.getPath().contains("primary")) {
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                String[] audioPath = fileUri.getPath().split(":");
+                txtInfo.setText(path + "/" + audioPath[1]);
+            } else {
+
+                txtInfo.setText(fileUri.getPath());
+            }
+
+
         }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
@@ -417,8 +433,6 @@ public class MultimediaMain extends AppCompatActivity {
             mVideoView.setMediaController(mediaController);
             mVideoView.start();
 
-            // mVideoView = (VideoView)findViewById(R.id.video_view);
-            //mVideoView.setVideoURI(mImageUri);
         }
 
         if (requestCode == PICK_IMAGE_CAPTURE_REQUEST && resultCode == RESULT_OK) {
@@ -480,6 +494,27 @@ public class MultimediaMain extends AppCompatActivity {
             Log.d(TAG, "galleryAddPic: " + "\n" + Uri.fromFile(f));
         } catch (Exception e) {
             Log.d(TAG, "galleryAddPic: " + e.getMessage() + e.getCause());
+        }
+    }
+
+    protected void addRecordingToMediaLibrary() {
+        try {
+            ContentValues values = new ContentValues(4);
+            long current = System.currentTimeMillis();
+            values.put(MediaStore.Audio.Media.TITLE, "audio" + audioFile.getName());
+            values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
+            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/ogg");
+            values.put(MediaStore.Audio.Media.DATA, audioFile.getAbsolutePath());
+            ContentResolver contentResolver = getContentResolver();
+
+            Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            fileUri = contentResolver.insert(base, values);
+
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "addRecordingToMediaLibrary: " + e.getCause() + ", " + e.getMessage() + ", ");
+            Toast.makeText(this, e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
         }
     }
 
