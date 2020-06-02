@@ -4,10 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -40,7 +38,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.loader.content.CursorLoader;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +50,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -409,7 +405,8 @@ public class MultimediaMain extends AppCompatActivity {
             if (fileUri.getPath().contains("primary")) {
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath();
                 String[] audioPath = fileUri.getPath().split(":");
-                txtInfo.setText(path + "/" + audioPath[1]);
+                path += "/" + audioPath[1];
+                txtInfo.setText(path);
             } else {
 
                 txtInfo.setText(fileUri.getPath());
@@ -570,7 +567,7 @@ public class MultimediaMain extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(MultimediaMain.this, R.string.upload_succes, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MultimediaMain.this, R.string.upload_success, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

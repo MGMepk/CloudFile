@@ -16,7 +16,7 @@
     <string name="item_deleted">Elemento Borrado</string>
     <string name="no_file">Archivo no seleccionado</string>
     <string name="undefined"> Archivo indefinido</string>
-    <string name="upload_succes"> Subido Correctamente</string>
+    <string name="upload_success"> Subido Correctamente</string>
     <string name="non_editable">Este documento no es editable.</string>
     <string name="new_doc">Nuevo Documento</string>
     <string name="request_permissions">Por seguridad, está desactivada la SD y el micrófono, actívelos ambos.</string>
@@ -41,5 +41,7 @@
     <string name="saving">Guardando</string>
     <string name="file_success">Archivo descargado con éxito</string>
     <string name="file_fail">Error al descargar el archivo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="cancelled">Cancelado</string>
 
 </resources>

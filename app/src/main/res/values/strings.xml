@@ -16,7 +16,7 @@
     <string name="item_deleted">Deleted item</string>
     <string name="no_file">no file selected</string>
     <string name="undefined"> file undefined</string>
-    <string name="upload_succes">Upload Successful</string>
+    <string name="upload_success">Upload Successful</string>
     <string name="non_editable">This document is not editable</string>
     <string name="new_doc">New Document</string>
 
@@ -43,5 +43,7 @@
     <!-- Download Task -->
     <string name="file_success"> File downloaded successful</string>
     <string name="file_fail">Error at download file</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancelled">Cancelled</string>
 
 </resources>

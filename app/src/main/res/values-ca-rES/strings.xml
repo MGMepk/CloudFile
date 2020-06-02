@@ -16,7 +16,7 @@
     <string name="item_deleted">Element esborrat</string>
     <string name="no_file">Arxiu no seleccionat</string>
     <string name="undefined">Arxiu no definit</string>
-    <string name="upload_succes">Pujat Correctament</string>
+    <string name="upload_success">Pujat Correctament</string>
     <string name="non_editable">Aquest document no és editable</string>
     <string name="new_doc">Nou Document</string>
 
@@ -42,5 +42,7 @@
     <string name="saving">Guardant</string>
     <string name="file_success">Arxiu descarregat amb éxit</string>
     <string name="file_fail">Error al descarregar l\'arxiu</string>
+    <string name="cancel">Cancel·lar</string>
+    <string name="cancelled">Cancel·lat</string>
 
 </resources>

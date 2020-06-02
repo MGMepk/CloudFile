@@ -9,6 +9,9 @@
         path="Android/data/com.escoladeltreball.cloudfile/files/Movies" />
     <external-path
         name="my_records"
-        path="Android/data/com.escoladeltreball.cloudfile/files/Records" />
+        path="Android/data/com.escoladeltreball.cloudfile/files/Music" />
+    <external-path
+        name="my_documents"
+        path="Android/data/com.escoladeltreball.cloudfile/files/Documents" />
 
 </paths>
