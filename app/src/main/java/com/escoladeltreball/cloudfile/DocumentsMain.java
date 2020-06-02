@@ -153,7 +153,7 @@ public class DocumentsMain extends AppCompatActivity {
 
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
                 }
 
             } else {

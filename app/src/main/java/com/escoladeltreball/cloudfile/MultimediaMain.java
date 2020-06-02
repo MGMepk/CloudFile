@@ -207,26 +207,55 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     private void makeVideo() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            int permCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-            videoFile = null;
-            try {
-                videoFile = createVideoFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (videoFile != null) {
-                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
-                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takeVideo: " + fileUri + "\n" + currentPhotoPath);
-                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-            }
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck1 == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck2 == PackageManager.PERMISSION_GRANTED)) {
 
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
+                        (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) |
+                                (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO))))) {
+
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+
+                    videoFile = null;
+                    try {
+                        videoFile = createVideoFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (videoFile != null) {
+                        fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
+                        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        Log.d(TAG, "takeVideo: " + fileUri + "\n" + currentPhotoPath);
+                        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+                    }
+
+                }
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                mVideoView.setVisibility(VideoView.VISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
         }
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        mVideoView.setVisibility(VideoView.VISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
 
     }
 
@@ -248,7 +277,6 @@ public class MultimediaMain extends AppCompatActivity {
     private void startRecord() {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            txtInfo.setText("");
             int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -260,9 +288,6 @@ public class MultimediaMain extends AppCompatActivity {
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)))) {
 
                     Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
-
-                    txtInfo.setText(R.string.request_permissions);
-
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
@@ -327,58 +352,137 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     private void openAudioChooser() {
-        Intent intent = new Intent();
-        intent.setType("audio/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_AUDIO_REQUEST);
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.VISIBLE);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("audio/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_AUDIO_REQUEST);
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.VISIBLE);
+            }
+        }
     }
 
     private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        mImageView.setVisibility(ImageView.VISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                mImageView.setVisibility(ImageView.VISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
+        }
     }
 
     private void openVideoChooser() {
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_VIDEO_REQUEST);
-        mVideoView.setVisibility(VideoView.VISIBLE);
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_VIDEO_REQUEST);
+                mVideoView.setVisibility(VideoView.VISIBLE);
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
+        }
     }
 
     private void makePhoto() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (photoFile != null) {
-                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takePhoto: " + fileUri + "\n" + currentPhotoPath);
-                startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-            }
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck2 == PackageManager.PERMISSION_GRANTED)) {
 
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
+                        (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)))) {
+
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (photoFile != null) {
+                        fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        Log.d(TAG, "takePhoto: " + fileUri + "\n" + currentPhotoPath);
+                        startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+
+                    }
+
+                }
+
+                mImageView.setVisibility(ImageView.VISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
         }
-
-        mImageView.setVisibility(ImageView.VISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
-
     }
 
     private File createImageFile() throws IOException {
@@ -446,17 +550,10 @@ public class MultimediaMain extends AppCompatActivity {
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
 
-
-            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-            Log.d(TAG, "onActivityResult: " + scaleFactor + "," + photoH + "," + photoW);
-
-            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inSampleSize = Math.min(photoW / targetW, photoH / targetH);
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inPurgeable = true;
 
-
-            Log.d(TAG, "onActivityResult:a " + scaleFactor + "," + photoH + "," + photoW + "..." + currentPhotoPath);
             Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
             mImageView.setImageBitmap(bitmap2);
 
