@@ -143,11 +143,14 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
                     }
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
                     String videoFileName = "MP4_" + timeStamp + "_";
-                    File localFile = new File(videoPath, videoFileName + selectedItem.getName() + "." + getFileExtension(url));
+                    final File localFile = new File(videoPath, videoFileName + selectedItem.getName() + "." + getFileExtension(url));
                     ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            mediaScanIntent.setData(Uri.fromFile(localFile));
+                            sendBroadcast(mediaScanIntent);
                             Toast.makeText(VideosActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

@@ -2,7 +2,9 @@ package com.escoladeltreball.cloudfile;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -137,11 +139,14 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
                     String docFileName = "DOC_" + timeStamp + "_";
 
-                    File localFile = new File(docPath, docFileName + selectedItem.getName() + "." + getFileExtension(url));
+                    final File localFile = new File(docPath, docFileName + selectedItem.getName() + "." + getFileExtension(url));
                     ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            mediaScanIntent.setData(Uri.fromFile(localFile));
+                            sendBroadcast(mediaScanIntent);
                             Toast.makeText(DocumentsActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
