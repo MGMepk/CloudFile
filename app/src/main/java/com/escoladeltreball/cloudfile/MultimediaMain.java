@@ -40,6 +40,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -100,6 +101,7 @@ public class MultimediaMain extends AppCompatActivity {
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
+        Button logoutButton = findViewById(R.id.logoutButton);
 
 
         // upload button
@@ -162,6 +164,13 @@ public class MultimediaMain extends AppCompatActivity {
             }
         });
 
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
 
         record.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -206,6 +215,13 @@ public class MultimediaMain extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void logout() {
+
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), Login.class));
+        finish();
     }
 
     private void makeVideo() {

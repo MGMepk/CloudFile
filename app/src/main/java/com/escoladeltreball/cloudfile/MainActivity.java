@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openDocumentsMain() {
-        Intent intent = new Intent(this, DocumentsMain.class);
+        Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
 

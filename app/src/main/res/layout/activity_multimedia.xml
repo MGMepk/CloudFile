@@ -118,5 +118,15 @@
         android:layout_alignParentBottom="true"
         android:text="@string/upload" />
 
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="120dp"
+        android:layout_marginBottom="13dp"
+        android:text="LOGOUT" />
+
 
 </RelativeLayout>
