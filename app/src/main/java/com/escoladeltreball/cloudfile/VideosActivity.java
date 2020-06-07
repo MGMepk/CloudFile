@@ -51,9 +51,9 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_videos);
+        setContentView(R.layout.recycler_layout);
 
-        mRecyclerView = findViewById(R.id.recycler_view_videos);
+        mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 

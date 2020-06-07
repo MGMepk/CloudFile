@@ -54,7 +54,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_documents);
+        setContentView(R.layout.recycler_layout);
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
