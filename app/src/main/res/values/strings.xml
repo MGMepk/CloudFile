@@ -8,16 +8,15 @@
     <string name="show_uploads">Show Uploads</string>
     <string name="name">Name</string>
     <string name="record">Record</string>
-    <string name="sampleurl">sample Url</string>
+    <string name="sample_url">sample Url</string>
     <string name="choose_document">Document</string>
     <string name="edit">Edit</string>
-    <string name="playing_pos">Playing position:</string>
     <string name="playing">Playing</string>
     <string name="delete_message">Are you sure you want to delete this entry?</string>
     <string name="item_deleted">Deleted item</string>
     <string name="no_file">no file selected</string>
     <string name="undefined"> file undefined</string>
-    <string name="upload_succes">Upload Successful</string>
+    <string name="upload_success">Upload Successful</string>
     <string name="non_editable">This document is not editable</string>
     <string name="new_doc">New Document</string>
 
@@ -44,5 +43,7 @@
     <!-- Download Task -->
     <string name="file_success"> File downloaded successful</string>
     <string name="file_fail">Error at download file</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancelled">Cancelled</string>
 
 </resources>

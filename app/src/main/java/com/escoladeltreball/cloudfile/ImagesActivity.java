@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -31,7 +32,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ImagesActivity extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
@@ -130,18 +133,23 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                 try {
                     final Upload selectedItem = mUploads.get(position);
                     String url = selectedItem.getUrl();
-                    final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
-
-                    File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
-                    if (!rootPath.exists()) {
-                        rootPath.mkdirs();
+                    final StorageReference ref = mStorage.getReferenceFromUrl(url);
+                    File rootPath = new File(Environment.getExternalStorageDirectory(), "CloudFile");
+                    File imagePath = new File(rootPath, "Images");
+                    if (!imagePath.exists()) {
+                        imagePath.mkdirs();
                     }
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+                    String imageFileName = "JPEG_" + timeStamp + "_";
 
-                    File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
-                    audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    final File localFile = new File(imagePath, imageFileName + selectedItem.getName() + "." + getFileExtension(url));
+                    ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            mediaScanIntent.setData(Uri.fromFile(localFile));
+                            sendBroadcast(mediaScanIntent);
                             Toast.makeText(ImagesActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

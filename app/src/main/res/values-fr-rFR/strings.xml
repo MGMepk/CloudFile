@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="docs">Documents</string>
+    <string name="audio">Audio</string>
+    <string name="upload">Télécharger</string>
+    <string name="video">Vidéo</string>
+    <string name="images">Images</string>
+    <string name="show_uploads">Afficher les téléchargements</string>
+    <string name="name">Nom</string>
+    <string name="record">Enregistrer</string>
+    <string name="sample_url">Exemple d\'URL</string>
+    <string name="choose_document">Document</string>
+    <string name="edit">Éditer</string>
+    <string name="playing">Jouer</string>
+    <string name="delete_message">Voulez-vous vraiment supprimer cette entrée?</string>
+    <string name="item_deleted">Élément supprimé</string>
+    <string name="no_file">"aucun fichier sélectionné  "</string>
+    <string name="undefined">fichier non défini</string>
+    <string name="non_editable">Ce document n\'est pas modifiable</string>
+    <string name="upload_success">Téléchargement réussi</string>
+    <string name="new_doc">Nouveau Document</string>
+    <string name="select">Sélectionnez l\'action</string>
+    <string name="request_permissions">Pour des raisons de sécurité, SD et le microphone sont désactivés, activez les deux.</string>
+    <string name="download">Télécharger</string>
+    <string name="open">Ouverture</string>
+    <string name="delete">Supprimer</string>
+    <string name="start">Commencer l\'enregistrement</string>
+    <string name="stop">Arrête d\'enregistrer</string>
+    <string name="multimedia">Multimédia</string>
+    <string name="video_recording">Enregistrement video</string>
+    <string name="take_a_photo">Prendre une photo</string>
+    <string name="save">Sauvegarder</string>
+    <string name="file_name">Nom de fichier</string>
+    <string name="document_content">Contenu du document</string>
+    <string name="saving">Sauvegarde</string>
+    <string name="file_success">Fichier téléchargé avec succès</string>
+    <string name="cancel">Annuler</string>
+    <string name="cancelled">Annulé</string>
+    <string name="file_fail">Erreur lors du téléchargement du fichier</string>
+</resources>

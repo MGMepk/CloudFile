@@ -1,6 +1,7 @@
 package com.escoladeltreball.cloudfile;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -64,7 +65,6 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
-    private static final int PICK_IMAGE_CAPTURE_REQUEST2 = 5;
     private static final int REQUEST_VIDEO_CAPTURE = 6;
 
 
@@ -81,9 +81,6 @@ public class MultimediaMain extends AppCompatActivity {
     MediaPlayer player;
     File audioFile = null;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
-    File sampleDir = Environment.getExternalStorageDirectory();
-    File appDir = new File(sampleDir, "CloudFile");
-    File soundDir = new File(appDir, "Records");
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     String currentPhotoPath;
@@ -173,6 +170,7 @@ public class MultimediaMain extends AppCompatActivity {
 
 
         record.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -225,32 +223,60 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     private void makeVideo() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            int permCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-            videoFile = null;
-            try {
-                videoFile = createVideoFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck1 == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck2 == PackageManager.PERMISSION_GRANTED)) {
+
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
+                        (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) |
+                                (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO))))) {
+
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+
+                    videoFile = null;
+                    try {
+                        videoFile = createVideoFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (videoFile != null) {
+                        fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
+                        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        Log.d(TAG, "takeVideo: " + fileUri + "\n" + currentPhotoPath);
+                        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+                    }
+
+                }
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                mVideoView.setVisibility(VideoView.VISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
             }
-            if(videoFile != null){
-                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", videoFile);
-                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takeVideo: " + fileUri + "\n"+ currentPhotoPath);
-                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-
-            }
-
         }
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        mVideoView.setVisibility(VideoView.VISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
 
     }
 
     private File createVideoFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
         String videoFileName = "MP4_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
         File video = File.createTempFile(
@@ -267,7 +293,6 @@ public class MultimediaMain extends AppCompatActivity {
     private void startRecord() {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            txtInfo.setText("");
             int permCheck1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -279,9 +304,6 @@ public class MultimediaMain extends AppCompatActivity {
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)))) {
 
                     Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
-
-                    txtInfo.setText(R.string.request_permissions);
-
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
@@ -294,10 +316,9 @@ public class MultimediaMain extends AppCompatActivity {
 
             } else {
                 try {
-                    if (!soundDir.exists()) {
-                        soundDir.mkdirs();
-                    }
-                    audioFile = File.createTempFile("sound", ".ogg", soundDir);
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+                    String audioFileName = "Sound_" + timeStamp + "_";
+                    audioFile = File.createTempFile(audioFileName, ".ogg", getExternalFilesDir(Environment.DIRECTORY_MUSIC));
                     recorder = new MediaRecorder();
                     recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                     recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -307,14 +328,14 @@ public class MultimediaMain extends AppCompatActivity {
                     recorder.start();
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "startRecording1: " + e.getMessage() + e.getCause());
+                    Log.d(TAG, "startRecording: " + e.getMessage() + e.getCause());
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "sd card error: " + sampleDir + e.getMessage() + e.getCause());
+                    Log.d(TAG, "sd card error: " + e.getMessage() + e.getCause());
 
                 } catch (Exception e) {
-                    Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
+                    Log.d(TAG, "startRecording: " + e.getMessage() + e.getCause());
                     Toast.makeText(this, "Exception: message: " + e.getMessage() + ", cause: " + e.getCause() + ", " +
                             audioFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
@@ -333,6 +354,8 @@ public class MultimediaMain extends AppCompatActivity {
             txtInfo.setVisibility(TextView.VISIBLE);
             txtInfo.setText(audioFile.getAbsolutePath());
             addRecordingToMediaLibrary();
+            mImageView.setVisibility(ImageView.INVISIBLE);
+            mVideoView.setVisibility(VideoView.INVISIBLE);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Log.d(TAG, "stopRecording: " + e.getMessage() + e.getCause());
@@ -342,6 +365,246 @@ public class MultimediaMain extends AppCompatActivity {
             Toast.makeText(this, "Exception" + e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
         }
         Toast.makeText(this, R.string.stop, Toast.LENGTH_SHORT).show();
+    }
+
+    private void openAudioChooser() {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("audio/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_AUDIO_REQUEST);
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.VISIBLE);
+            }
+        }
+    }
+
+    private void openImageChooser() {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                mImageView.setVisibility(ImageView.VISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
+        }
+    }
+
+    private void openVideoChooser() {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_VIDEO_REQUEST);
+                mVideoView.setVisibility(VideoView.VISIBLE);
+                mImageView.setVisibility(ImageView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
+        }
+    }
+
+    private void makePhoto() {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            int permCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (!(permCheck == PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck2 == PackageManager.PERMISSION_GRANTED)) {
+
+                //Call for permission
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
+                        (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)))) {
+
+                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                }
+
+            } else {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (photoFile != null) {
+                        fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        Log.d(TAG, "takePhoto: " + fileUri + "\n" + currentPhotoPath);
+                        startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
+
+                    }
+
+                }
+
+                mImageView.setVisibility(ImageView.VISIBLE);
+                mVideoView.setVisibility(VideoView.INVISIBLE);
+                txtInfo.setVisibility(TextView.INVISIBLE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
+                && data.getData() != null) {
+            fileUri = data.getData();
+
+            if (fileUri.getPath().contains("primary")) {
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                String[] audioPath = fileUri.getPath().split(":");
+                path += "/" + audioPath[1];
+                txtInfo.setText(path);
+            } else {
+
+                txtInfo.setText(fileUri.getPath());
+            }
+
+
+        }
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            fileUri = data.getData();
+
+            Picasso.with(this).load(fileUri).into(mImageView);
+        }
+        if (requestCode == PICK_VIDEO_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            fileUri = data.getData();
+
+            mVideoView.setVideoURI(fileUri);
+            MediaController mediaController = new MediaController(this);
+            mediaController.setAnchorView(mVideoView);
+            mVideoView.setMediaController(mediaController);
+            mVideoView.start();
+
+        }
+
+        if (requestCode == PICK_IMAGE_CAPTURE_REQUEST && resultCode == RESULT_OK) {
+
+            int targetW = 300;
+            int targetH = 300;
+
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            bmOptions.inSampleSize = Math.min(photoW / targetW, photoH / targetH);
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inPurgeable = true;
+
+            Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+            mImageView.setImageBitmap(bitmap2);
+
+            galleryAddPic();
+
+        }
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            fileUri = data.getData();
+            mVideoView.setVideoURI(fileUri);
+            MediaController mediaController = new MediaController(this);
+            mediaController.setAnchorView(mVideoView);
+            mVideoView.setMediaController(mediaController);
+            mVideoView.start();
+
+            galleryAddPic();
+        }
+
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void galleryAddPic() {
+        try {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File f = new File(currentPhotoPath);
+            mediaScanIntent.setData(Uri.fromFile(f));
+            sendBroadcast(mediaScanIntent);
+            Log.d(TAG, "galleryAddPic: " + "\n" + Uri.fromFile(f));
+        } catch (Exception e) {
+            Log.d(TAG, "galleryAddPic: " + e.getMessage() + e.getCause());
+        }
     }
 
     protected void addRecordingToMediaLibrary() {
@@ -365,183 +628,10 @@ public class MultimediaMain extends AppCompatActivity {
         }
     }
 
-
-    private void openAudioChooser() {
-        Intent intent = new Intent();
-        intent.setType("audio/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_AUDIO_REQUEST);
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.VISIBLE);
-    }
-
-    private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        mImageView.setVisibility(ImageView.VISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
-    }
-
-    private void openVideoChooser() {
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_VIDEO_REQUEST);
-        mVideoView.setVisibility(VideoView.VISIBLE);
-        mImageView.setVisibility(ImageView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
-    }
-
-    private void makePhoto(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            //startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
-            photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(photoFile != null){
-                fileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                Log.d(TAG, "takePhoto: " + fileUri + "\n"+ currentPhotoPath);
-                startActivityForResult(takePictureIntent, PICK_IMAGE_CAPTURE_REQUEST);
-
-            }
-
-        }
-
-
-        mImageView.setVisibility(ImageView.VISIBLE);
-        mVideoView.setVisibility(VideoView.INVISIBLE);
-        txtInfo.setVisibility(TextView.INVISIBLE);
-
-    }
-
-    private File createImageFile() throws IOException{
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-
-
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
-                && data.getData() != null) {
-            fileUri = data.getData();
-            txtInfo.setText(fileUri.getPath());
-        }
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            fileUri = data.getData();
-
-            Picasso.with(this).load(fileUri).into(mImageView);
-        }
-        if (requestCode == PICK_VIDEO_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            fileUri = data.getData();
-
-            mVideoView.setVideoURI(fileUri);
-            MediaController mediaController = new MediaController(this);
-            mediaController.setAnchorView(mVideoView);
-            mVideoView.setMediaController(mediaController);
-            mVideoView.start();
-
-            // mVideoView = (VideoView)findViewById(R.id.video_view);
-            //mVideoView.setVideoURI(mImageUri);
-        }
-
-        if (requestCode == PICK_IMAGE_CAPTURE_REQUEST && resultCode == RESULT_OK) {
-
-            int targetW = 300;
-            int targetH = 300;
-
-
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inJustDecodeBounds = true;
-
-            BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-
-            int photoW = bmOptions.outWidth;
-            int photoH = bmOptions.outHeight;
-
-
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-            Log.d(TAG, "onActivityResult: "+scaleFactor+","+photoH+","+photoW);
-
-            bmOptions.inSampleSize = scaleFactor;
-            bmOptions.inJustDecodeBounds = false;
-            bmOptions.inPurgeable = true;
-
-
-            Log.d(TAG, "onActivityResult:a "+scaleFactor+","+photoH+","+photoW+ "..."+ currentPhotoPath);
-            Bitmap bitmap2 = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-            mImageView.setImageBitmap(bitmap2);
-
-            galleryAddPic();
-
-        }
-        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK  && data != null && data.getData() != null) {
-            fileUri = data.getData();
-            mVideoView.setVideoURI(fileUri);
-            MediaController mediaController = new MediaController(this);
-            mediaController.setAnchorView(mVideoView);
-            mVideoView.setMediaController(mediaController);
-            mVideoView.start();
-
-            galleryAddPic();
-        }
-
-
-    }
-
-    private String getFileExtension(Uri uri) {
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    private void galleryAddPic() {
-        try {
-
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(currentPhotoPath);
-            mediaScanIntent.setData(Uri.fromFile(f));
-            sendBroadcast(mediaScanIntent);
-            Log.d(TAG, "galleryAddPic: "+ "\n" + Uri.fromFile(f));
-
-
-        } catch (Exception e){
-            Log.d(TAG, "galleryAddPic: "+e.getMessage()+e.getCause());
-        }
-
-    }
-
-
-
     private void uploadFile() {
         if (fileUri != null) {
-            long yourmilliseconds = System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy - HH:mm:ss", java.util.Locale.getDefault());
-            Date resultDate = new Date(yourmilliseconds);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
+            Date resultDate = new Date(System.currentTimeMillis());
 
             MimeTypeMap mime = MimeTypeMap.getSingleton();
             String mimeType = mime.getMimeTypeFromExtension(getFileExtension(fileUri));
@@ -590,7 +680,7 @@ public class MultimediaMain extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(MultimediaMain.this, R.string.upload_succes, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MultimediaMain.this, R.string.upload_success, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

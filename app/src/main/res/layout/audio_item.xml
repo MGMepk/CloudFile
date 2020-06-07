@@ -25,7 +25,7 @@
             android:id="@+id/audioUrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sampleurl" />
+            android:text="@string/sample_url" />
 
     </LinearLayout>
 

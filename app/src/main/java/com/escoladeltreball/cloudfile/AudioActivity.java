@@ -2,9 +2,11 @@ package com.escoladeltreball.cloudfile;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -33,7 +35,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnItemClickListener {
@@ -110,9 +114,9 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepare();
             mediaPlayer.start();
-            String playing = getString(R.string.playing_pos);
+            String playing = getString(R.string.playing);
 
-            Toast.makeText(this, playing + " " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, playing + ": " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,18 +146,25 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
                 try {
                     final Upload selectedItem = mUploads.get(position);
                     String url = selectedItem.getUrl();
-                    final StorageReference audioRef = mStorage.getReferenceFromUrl(url);
+                    final StorageReference ref = mStorage.getReferenceFromUrl(url);
 
-                    File rootPath = new File(Environment.getExternalStorageDirectory(), "Download");
-                    if (!rootPath.exists()) {
-                        rootPath.mkdirs();
+                    File rootPath = new File(Environment.getExternalStorageDirectory(), "CloudFile");
+                    File audioPath = new File(rootPath, "Audios");
+                    if (!audioPath.exists()) {
+                        audioPath.mkdirs();
                     }
 
-                    File localFile = new File(rootPath, selectedItem.getName() + "." + getFileExtension(url));
-                    audioRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new Date());
+                    String soundFileName = "SOUND_" + timeStamp + "_";
+
+                    final File localFile = new File(audioPath, soundFileName + selectedItem.getName() + "." + getFileExtension(url));
+                    ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            mediaScanIntent.setData(Uri.fromFile(localFile));
+                            sendBroadcast(mediaScanIntent);
                             Toast.makeText(AudioActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
