@@ -21,10 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".MainActivity"></activity>
         <activity android:name=".Register">
         </activity>
-        <activity android:name=".Authentication" />
         <activity
             android:name=".VideosActivity"
             android:parentActivityName=".MultimediaMain" />
@@ -39,11 +37,9 @@
             android:name=".AudioActivity"
             android:parentActivityName=".MultimediaMain" />
         <activity
-            android:name=".DocumentsMain"
-            android:parentActivityName=".MainActivity" />
+            android:name=".DocumentsMain" />
         <activity
-            android:name=".MultimediaMain"
-            android:parentActivityName=".MainActivity" />
+            android:name=".MultimediaMain" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -45,5 +45,15 @@
     <string name="file_fail">Error at download file</string>
     <string name="cancel">Cancel</string>
     <string name="cancelled">Cancelled</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="no_account_register_here">No account? Register here.</string>
+
+    <string name="already_logged">Already logged</string>
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="password_length">Password must be more than 6 characters</string>
+    <string name="user_created">User created</string>
 
 </resources>

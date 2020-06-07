@@ -37,4 +37,13 @@
     <string name="cancel">Annuler</string>
     <string name="cancelled">Annulé</string>
     <string name="file_fail">Erreur lors du téléchargement du fichier</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">IDENTIFIER</string>
+    <string name="no_account_register_here">Pas de compte? Inscrivez-vous ici.</string>
+    <string name="already_logged">Déjà connecté</string>
+    <string name="email_required">L\'email est requis</string>
+    <string name="password_length">Le mot de passe doit comporter plus de 6 caractères</string>
+    <string name="password_required">Mot de passe requis</string>
+    <string name="user_created">Créé par l\'utilisateur</string>
 </resources>

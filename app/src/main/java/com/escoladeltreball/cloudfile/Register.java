@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,13 +21,10 @@ public class Register extends AppCompatActivity {
     Button mRegisterButton;
     FirebaseAuth fAuth;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
 
         mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.email);
@@ -39,11 +35,10 @@ public class Register extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
 
         if (fAuth.getCurrentUser() != null ) {
-            Toast.makeText(this, "Already logged", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.already_logged, Toast.LENGTH_SHORT).show();
             startActivity(new Intent( getApplicationContext(), MultimediaMain.class));
             finish();
         }
-
 
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,24 +47,27 @@ public class Register extends AppCompatActivity {
                 String password = mPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)){
-                    mEmail.setError("Email is required");
+                    String message = getString(R.string.email_required);
+                    mEmail.setError(message);
                     return;
 
                 }
                 if (TextUtils.isEmpty(password)){
-                    mPassword.setError("Password is required");
+                    String message = getString(R.string.password_required);
+                    mPassword.setError(message);
                     return;
                 }
 
                 if(password.length() < 6){
-                    mPassword.setError("Password must be more than 6 characters");
+                    String message = getString(R.string.password_length);
+                    mPassword.setError(message);
                 }
 
                 fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(Register.this, "User created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Register.this, R.string.user_created, Toast.LENGTH_SHORT).show();
                             startActivity(new Intent( getApplicationContext(), MultimediaMain.class));
 
                         }else{

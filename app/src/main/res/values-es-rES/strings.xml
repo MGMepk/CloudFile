@@ -43,5 +43,14 @@
     <string name="file_fail">Error al descargar el archivo</string>
     <string name="cancel">Cancelar</string>
     <string name="cancelled">Cancelado</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Contraseña</string>
+    <string name="login">ENTRAR</string>
+    <string name="no_account_register_here">¿No tienes cuenta? Registrate aquí.</string>
+    <string name="already_logged">Ya estás identificado</string>
+    <string name="email_required">El correo electronico es obligatorio</string>
+    <string name="password_required">La contraseña es obligatoria</string>
+    <string name="password_length">La contraseña ha de contener más de 6 carácteres</string>
+    <string name="user_created">Usuario creado</string>
 
 </resources>
