@@ -24,7 +24,6 @@
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".Register">
         </activity>
-        <activity android:name=".Authentication" />
         <activity
             android:name=".VideosActivity"
             android:parentActivityName=".MultimediaMain" />

@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,10 +53,18 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
     private List<Upload> mUploads;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
 
+    private FirebaseUser user;
+    FirebaseAuth fAuth;
+    private static String REFERENCE = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_documents);
+
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        REFERENCE = user.getUid()+"/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -67,7 +77,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
         mAdapter.setOnItemClickListener(DocumentsActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/documents");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "documents");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

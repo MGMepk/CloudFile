@@ -42,6 +42,7 @@ import androidx.core.content.FileProvider;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -56,8 +57,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MultimediaMain extends AppCompatActivity {
+
+    private FirebaseUser user;
+    FirebaseAuth fAuth;
     private static final String TAG = "test";
-    private static final String REFERENCE = "uploads/";
+    private static String REFERENCE = "";
     private static final String AUDIO = REFERENCE + "audio";
     private static final String VIDEO = REFERENCE + "videos";
     private static final String IMAGES = REFERENCE + "images";
@@ -68,6 +72,7 @@ public class MultimediaMain extends AppCompatActivity {
     private static final int REQUEST_VIDEO_CAPTURE = 6;
 
 
+
     private EditText fileName;
     private TextView txtInfo;
 
@@ -75,6 +80,7 @@ public class MultimediaMain extends AppCompatActivity {
     private ImageView mImageView;
 
     private ProgressBar mProgressBar;
+    private TextView userIn;
 
     private Uri fileUri;
     MediaRecorder recorder;
@@ -88,17 +94,28 @@ public class MultimediaMain extends AppCompatActivity {
     File photoFile;
     File videoFile;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multimedia);
         this.setTitle(R.string.multimedia);
 
+        userIn = findViewById(R.id.textView);
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        REFERENCE = user.getUid()+"/";
+        //Toast.makeText(this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        userIn.setText(user.getEmail());
+
         //choosers
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
         Button logoutButton = findViewById(R.id.logoutButton);
+        userIn = findViewById(R.id.textView);
 
 
         // upload button
@@ -519,7 +536,7 @@ public class MultimediaMain extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
-                && data.getData() != null) {
+                && data.getData() != null ) {
             fileUri = data.getData();
 
             if (fileUri.getPath().contains("primary")) {
@@ -639,24 +656,26 @@ public class MultimediaMain extends AppCompatActivity {
             String[] type = mimeType.split("/");
 
             if (type[0].equals("image")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(IMAGES);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(IMAGES);
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "images");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "images");
 
             }
             if (type[0].equals("video")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(VIDEO);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(VIDEO);
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "videos");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "videos");
 
             }
 
             if (type[0].equals("audio")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(AUDIO);
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(AUDIO);
+                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "audio");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "audio");
 
             }
 
 
             StorageReference fileReference = mStorageRef.child(sdf.format(resultDate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
+            //Toast.makeText(this, fileReference.getPath().toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, REFERENCE, Toast.LENGTH_SHORT).show();
 
             fileReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override

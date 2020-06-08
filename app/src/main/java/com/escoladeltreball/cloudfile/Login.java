@@ -35,6 +35,8 @@ public class Login extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
 
+
+
         fAuth = FirebaseAuth.getInstance();
         if (fAuth.getCurrentUser() != null ) {
             Toast.makeText(this, "Already logged", Toast.LENGTH_SHORT).show();
