@@ -11,8 +11,7 @@
         android:id="@+id/button_choose_audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/textView"
         android:contentDescription="@string/audio"
         android:src="@drawable/library_music" />
 
@@ -20,6 +19,7 @@
         android:id="@+id/button_choose_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
         android:layout_toEndOf="@id/button_choose_audio"
         android:contentDescription="@string/images"
         android:src="@drawable/photo_library" />
@@ -28,6 +28,7 @@
         android:id="@+id/button_choose_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
         android:layout_toEndOf="@+id/button_choose_image"
         android:contentDescription="@string/video"
         android:src="@drawable/video_library" />
@@ -36,14 +37,15 @@
         android:id="@+id/audio_file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
         android:layout_alignBaseline="@id/button_choose_video"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/button_choose_video"
         android:background="@color/white"
         android:gravity="center"
-        android:textSize="16sp"
         android:hint="@string/file_name"
         android:inputType="text"
+        android:textSize="16sp"
         tools:ignore="Autofill,LabelFor" />
 
     <TextView
@@ -80,7 +82,7 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/upload_audio"
+        android:layout_above="@id/upload"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="16dp" />
 
@@ -89,6 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:contentDescription="@string/record"
         android:src="@drawable/mic" />
 
@@ -111,35 +114,24 @@
         android:src="@drawable/add_photo" />
 
     <Button
-        android:id="@+id/upload_audio"
+        android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:text="@string/upload" />
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="130dp"
-        android:layout_marginBottom="0dp"
-        android:text="LOGOUT" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="140dp"
-        android:layout_marginBottom="50dp"
-        android:text="TextView"
-        android:textColor="@color/white"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:fontFamily="cursive"
-        android:textSize="20dp"/>
+        android:text="@string/textview"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
 
 
 </RelativeLayout>

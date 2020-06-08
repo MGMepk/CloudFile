@@ -46,4 +46,8 @@
     <string name="password_length">Le mot de passe doit comporter plus de 6 caractères</string>
     <string name="password_required">Mot de passe requis</string>
     <string name="user_created">Créé par l\'utilisateur</string>
+    <string name="logout">Déconnecter</string>
+    <string name="register">Inscrire</string>
+    <string name="full_name">Nom complet</string>
+    <string name="telephone_number">Numéro de téléphone</string>
 </resources>

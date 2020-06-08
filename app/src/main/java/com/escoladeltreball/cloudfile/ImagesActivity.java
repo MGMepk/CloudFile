@@ -52,7 +52,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
     private FirebaseUser user;
     FirebaseAuth fAuth;
-    private static String REFERENCE = "";
+    private String reference = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        REFERENCE = user.getUid()+"/";
+        assert user != null;
+        reference = user.getUid()+"/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -77,7 +78,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         mAdapter.setOnItemClickListener(ImagesActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "images");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

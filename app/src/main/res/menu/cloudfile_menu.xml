@@ -5,27 +5,29 @@
     <item
         android:id="@+id/help"
         android:title="@string/show_uploads"
-        app:showAsAction="ifRoom|withText" >
+        app:showAsAction="ifRoom|withText">
 
         <menu>
             <item
                 android:id="@+id/image_uploads"
-                android:title="@string/images"
-                />
+                android:title="@string/images" />
             <item
                 android:id="@+id/video_uploads"
-                android:title="@string/video"
-                />
+                android:title="@string/video" />
             <item
                 android:id="@+id/audio_uploads"
-                android:title="@string/audio"
-                />
+                android:title="@string/audio" />
 
             <item
                 android:id="@+id/Documents_uploads"
                 android:title="@string/choose_document" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/log_out"
+        android:icon="@drawable/log_out"
+        android:title="@string/logout" />
 
 
 </menu>

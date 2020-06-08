@@ -10,4 +10,9 @@
         android:id="@+id/multimedia"
         android:title="@string/multimedia"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/log_out"
+        android:icon="@drawable/log_out"
+        android:title="@string/logout" />
 </menu>

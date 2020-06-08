@@ -53,5 +53,9 @@
     <string name="password_required">La contrasenya és obligatoria</string>
     <string name="password_length">La contrasenya ha de tenir més de 6 caràcters</string>
     <string name="user_created">Usuari creat</string>
+    <string name="logout">Sortir</string>
+    <string name="register">Registrar</string>
+    <string name="full_name">Nom complet</string>
+    <string name="telephone_number">Numero de telefon</string>
 
 </resources>

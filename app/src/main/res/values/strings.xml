@@ -55,5 +55,10 @@
     <string name="password_required">Password is required</string>
     <string name="password_length">Password must be more than 6 characters</string>
     <string name="user_created">User created</string>
+    <string name="full_name">Full name</string>
+    <string name="telephone_number">Telephone Number</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="textview" translatable="false">TextView</string>
 
 </resources>

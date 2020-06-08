@@ -57,7 +57,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
     private FirebaseUser user;
     FirebaseAuth fAuth;
-    private static String REFERENCE = "";
+    private static String reference = "";
 
 
     @Override
@@ -67,7 +67,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        REFERENCE = user.getUid()+"/";
+        reference = user.getUid()+"/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -80,7 +80,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
         mAdapter.setOnItemClickListener(AudioActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "audio");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "audio");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

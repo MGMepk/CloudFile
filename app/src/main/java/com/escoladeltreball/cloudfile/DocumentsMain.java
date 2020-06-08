@@ -29,6 +29,8 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,8 +48,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DocumentsMain extends AppCompatActivity {
+    private FirebaseUser user;
+    FirebaseAuth fAuth;
     private static final int PICK_DOC_REQUEST = 3;
-    private static final String REFERENCE = "uploads/documents";
+    private String reference = "";
     private static final int MY_PERMISSIONS_REQUESTS = 10;
     private EditText docName;
     private TextView documentView;
@@ -75,6 +79,10 @@ public class DocumentsMain extends AppCompatActivity {
         setContentView(R.layout.activity_documents_main);
         this.setTitle(R.string.docs);
 
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        reference = user.getUid() + "/";
+
         chooser = findViewById(R.id.button_choose_doc);
         upload = findViewById(R.id.upload_doc);
         editor = findViewById(R.id.edit_doc);
@@ -86,8 +94,8 @@ public class DocumentsMain extends AppCompatActivity {
         dContent = findViewById(R.id.document_Edit);
         documentView = findViewById(R.id.document_view);
         mProgressBar = findViewById(R.id.progress_bar);
-        mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+        mStorageRef = FirebaseStorage.getInstance().getReference(reference + "documents");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "documents");
 
         chooser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +139,7 @@ public class DocumentsMain extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadMode();
-                if (!dContent.getText().toString().isEmpty()){
+                if (!dContent.getText().toString().isEmpty()) {
                     dContent.setText("");
                 }
                 Toast.makeText(DocumentsMain.this, R.string.cancelled, Toast.LENGTH_SHORT).show();
@@ -312,9 +320,18 @@ public class DocumentsMain extends AppCompatActivity {
             case R.id.multimedia:
                 startActivity(new Intent(this, MultimediaMain.class));
                 return true;
+            case R.id.log_out:
+                logout();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), Login.class));
+        finish();
     }
 
     private void editMode() {

@@ -55,7 +55,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
     private FirebaseUser user;
     FirebaseAuth fAuth;
-    private static String REFERENCE = "";
+    private static String reference = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,8 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        REFERENCE = user.getUid()+"/";
+        assert user != null;
+        reference = user.getUid()+"/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -77,7 +78,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
         mAdapter.setOnItemClickListener(DocumentsActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "documents");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "documents");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

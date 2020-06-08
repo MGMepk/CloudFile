@@ -52,7 +52,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
     private FirebaseUser user;
     FirebaseAuth fAuth;
-    private static String REFERENCE = "";
+    private String reference = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +61,9 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        REFERENCE = user.getUid()+"/";
+        reference = user.getUid()+"/";
 
-        mRecyclerView = findViewById(R.id.recycler_view_videos);
+        mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -77,7 +77,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
         mAdapter.setOnItemClickListener(VideosActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "videos");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "videos");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

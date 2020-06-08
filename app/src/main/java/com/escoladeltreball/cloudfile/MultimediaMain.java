@@ -61,16 +61,12 @@ public class MultimediaMain extends AppCompatActivity {
     private FirebaseUser user;
     FirebaseAuth fAuth;
     private static final String TAG = "test";
-    private static String REFERENCE = "";
-    private static final String AUDIO = REFERENCE + "audio";
-    private static final String VIDEO = REFERENCE + "videos";
-    private static final String IMAGES = REFERENCE + "images";
+    private static String reference = "";
     private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
     private static final int REQUEST_VIDEO_CAPTURE = 6;
-
 
 
     private EditText fileName;
@@ -95,8 +91,6 @@ public class MultimediaMain extends AppCompatActivity {
     File videoFile;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,20 +100,18 @@ public class MultimediaMain extends AppCompatActivity {
         userIn = findViewById(R.id.textView);
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        REFERENCE = user.getUid()+"/";
-        //Toast.makeText(this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        reference = user.getUid() + "/";
         userIn.setText(user.getEmail());
 
         //choosers
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
-        Button logoutButton = findViewById(R.id.logoutButton);
-        userIn = findViewById(R.id.textView);
+
 
 
         // upload button
-        Button upload = findViewById(R.id.upload_audio);
+        Button upload = findViewById(R.id.upload);
         fileName = findViewById(R.id.audio_file_name);
 
         //Recorders
@@ -133,8 +125,8 @@ public class MultimediaMain extends AppCompatActivity {
         txtInfo = findViewById(R.id.info_audio);
 
         mProgressBar = findViewById(R.id.progress_bar);
-        mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE);
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE);
+        mStorageRef = FirebaseStorage.getInstance().getReference(reference);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference);
 
 
         chooserImage.setOnClickListener(new View.OnClickListener() {
@@ -175,13 +167,6 @@ public class MultimediaMain extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 makeVideo();
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logout();
             }
         });
 
@@ -535,7 +520,7 @@ public class MultimediaMain extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
-                && data.getData() != null ) {
+                && data.getData() != null) {
             fileUri = data.getData();
 
             if (fileUri.getPath().contains("primary")) {
@@ -655,26 +640,23 @@ public class MultimediaMain extends AppCompatActivity {
             String[] type = mimeType.split("/");
 
             if (type[0].equals("image")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "images");
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "images");
+                mStorageRef = FirebaseStorage.getInstance().getReference(reference + "images");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "images");
 
             }
             if (type[0].equals("video")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "videos");
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "videos");
+                mStorageRef = FirebaseStorage.getInstance().getReference(reference + "videos");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "videos");
 
             }
 
             if (type[0].equals("audio")) {
-                mStorageRef = FirebaseStorage.getInstance().getReference(REFERENCE + "audio");
-                mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "audio");
+                mStorageRef = FirebaseStorage.getInstance().getReference(reference + "audio");
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference(reference + "audio");
 
             }
 
-
             StorageReference fileReference = mStorageRef.child(sdf.format(resultDate) + " - " + fileName.getText().toString().trim() + "." + getFileExtension(fileUri));
-            //Toast.makeText(this, fileReference.getPath().toString(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, REFERENCE, Toast.LENGTH_SHORT).show();
 
             fileReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -757,6 +739,10 @@ public class MultimediaMain extends AppCompatActivity {
 
             case R.id.video_uploads:
                 openVideosActivity();
+                return true;
+
+            case R.id.log_out:
+                logout();
                 return true;
 
             default:
