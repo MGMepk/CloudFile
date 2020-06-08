@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,10 +47,18 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private List<Upload> mUploads;
     private static final int MY_PERMISSIONS_REQUESTS = 10;
 
+    private FirebaseUser user;
+    FirebaseAuth fAuth;
+    private static String REFERENCE = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_images);
+
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+        REFERENCE = user.getUid()+"/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -64,7 +74,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         mAdapter.setOnItemClickListener(ImagesActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(REFERENCE + "images");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

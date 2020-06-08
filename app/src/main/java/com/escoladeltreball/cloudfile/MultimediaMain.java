@@ -80,6 +80,7 @@ public class MultimediaMain extends AppCompatActivity {
     private ImageView mImageView;
 
     private ProgressBar mProgressBar;
+    private TextView userIn;
 
     private Uri fileUri;
     MediaRecorder recorder;
@@ -105,15 +106,19 @@ public class MultimediaMain extends AppCompatActivity {
         setContentView(R.layout.activity_multimedia);
         this.setTitle(R.string.multimedia);
 
+        userIn = findViewById(R.id.textView);
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
         REFERENCE = user.getUid()+"/";
+        //Toast.makeText(this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        userIn.setText(user.getEmail());
 
         //choosers
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
         Button logoutButton = findViewById(R.id.logoutButton);
+        userIn = findViewById(R.id.textView);
 
 
         // upload button
@@ -456,7 +461,7 @@ public class MultimediaMain extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_AUDIO_REQUEST && resultCode == RESULT_OK && data != null
-                && data.getData() != null) {
+                && data.getData() != null ) {
             fileUri = data.getData();
             txtInfo.setText(fileUri.getPath());
         }
