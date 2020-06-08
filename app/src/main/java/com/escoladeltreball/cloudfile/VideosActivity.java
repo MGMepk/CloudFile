@@ -57,7 +57,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_videos);
+        setContentView(R.layout.recycler_layout);
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();

@@ -57,7 +57,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_images);
+        setContentView(R.layout.recycler_layout);
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();

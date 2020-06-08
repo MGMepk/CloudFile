@@ -44,5 +44,14 @@
     <string name="file_fail">Error al descarregar l\'arxiu</string>
     <string name="cancel">Cancel·lar</string>
     <string name="cancelled">Cancel·lat</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Contrasenya</string>
+    <string name="login">ENTRAR</string>
+    <string name="no_account_register_here">No tens compte? Registra\'t aquí.</string>
+    <string name="already_logged">Ja t\'has identificat.</string>
+    <string name="email_required">El correu electrònic és obligatori</string>
+    <string name="password_required">La contrasenya és obligatoria</string>
+    <string name="password_length">La contrasenya ha de tenir més de 6 caràcters</string>
+    <string name="user_created">Usuari creat</string>
 
 </resources>

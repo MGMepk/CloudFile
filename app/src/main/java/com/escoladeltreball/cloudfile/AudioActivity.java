@@ -63,7 +63,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio);
+        setContentView(R.layout.recycler_layout);
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
