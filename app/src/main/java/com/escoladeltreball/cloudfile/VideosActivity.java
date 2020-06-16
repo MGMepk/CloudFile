@@ -134,9 +134,6 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
-
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
 
@@ -181,6 +178,20 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
             }
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUESTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                int a = 1+1;
+            } else {
+                // permission denied
+                // Disable the functionality that depends on this permission.
+                Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

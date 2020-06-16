@@ -148,6 +148,36 @@ public class DocumentsMain extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PICK_DOC_REQUEST:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    openDocChooser();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUESTS:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    openEditorMode();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+        }
+
     private void openDocChooser() {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
@@ -155,13 +185,11 @@ public class DocumentsMain extends AppCompatActivity {
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
-                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
-
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_DOC_REQUEST);
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_DOC_REQUEST);
                 }
 
             } else {
