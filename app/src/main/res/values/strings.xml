@@ -61,4 +61,7 @@
     <string name="logout">Logout</string>
     <string name="textview" translatable="false">TextView</string>
 
+    <string name="permission">Permission denied</string>
+    <string name="hold_button">Hold button pressed for audio recording</string>
+
 </resources>

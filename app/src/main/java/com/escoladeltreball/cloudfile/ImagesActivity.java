@@ -62,7 +62,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
         assert user != null;
-        reference = user.getUid()+"/";
+        reference = user.getUid() + "/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);

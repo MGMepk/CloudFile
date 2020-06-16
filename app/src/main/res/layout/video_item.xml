@@ -21,10 +21,11 @@
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
-        <ImageView
+        <VideoView
             android:id="@+id/video_view_upload"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="200dp"
+            android:layout_gravity="center"
             android:contentDescription="@string/video" />
 
     </LinearLayout>

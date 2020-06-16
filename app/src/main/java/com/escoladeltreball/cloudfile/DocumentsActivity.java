@@ -65,7 +65,7 @@ public class DocumentsActivity extends AppCompatActivity implements DocumentsAda
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
         assert user != null;
-        reference = user.getUid()+"/";
+        reference = user.getUid() + "/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);

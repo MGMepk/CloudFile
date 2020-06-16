@@ -3,6 +3,7 @@ package com.escoladeltreball.cloudfile;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -11,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,27 +42,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
-        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(uploadCurrent.getUrl(),
-                MediaStore.Images.Thumbnails.MINI_KIND);
-        holder.imageView.setImageBitmap(thumb);
 
+        holder.videoView.setVideoURI(Uri.parse(uploadCurrent.getUrl()));
+        MediaController mc = new MediaController(mContext);
+        holder.videoView.setMediaController(mc);
+        mc.setAnchorView(holder.videoView);
 
-        /*Picasso.with(mContext)
-                .load(uploadCurrent.getmUrl())
-                .placeholder(R.mipmap.ic_launcher)
-                .fit()
-                .centerCrop()
-                .into(holder.imageView);*/
-        //videoView = itemView.findViewById(R.id.video_view_upload);
-
-        //fileUri = uploadCurrent.getData();
-
-        //VideoView video = new VideoView();
-        // holder.videoView.setVideoURI(Uri.parse(uploadUri));
-        // MediaController mediaController = new MediaController(mContext);
-        // mediaController.setAnchorView(videoView);
-        // videoView.setMediaController(mediaController);
-        //videoView.start();
     }
 
     @Override
@@ -67,15 +55,16 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
         return mUploads.size();
     }
 
-    public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+            View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         public TextView textViewName;
-        public ImageView imageView;
+        public VideoView videoView;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.text_view_nom);
-            imageView = itemView.findViewById(R.id.video_view_upload);
+            videoView = itemView.findViewById(R.id.video_view_upload);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -94,11 +83,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle(R.string.select);
+            MenuItem open = menu.add(Menu.NONE, 3, 3, R.string.open);
             MenuItem download = menu.add(Menu.NONE, 1, 1, R.string.download);
             MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
 
             download.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
+            open.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -113,6 +104,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
                         case 2:
                             mListener.onDeleteClick(position);
                             return true;
+                        case 3:
+                            mListener.onOpenClick(position);
+                            return true;
                     }
                 }
             }
@@ -122,6 +116,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ImageViewHol
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+
+        void onOpenClick(int position);
 
         void onDownloadClick(int position);
 

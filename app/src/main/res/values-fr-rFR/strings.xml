@@ -50,4 +50,6 @@
     <string name="register">Inscrire</string>
     <string name="full_name">Nom complet</string>
     <string name="telephone_number">Numéro de téléphone</string>
+    <string name="hold_button">Maintenez le bouton enfoncé pour l\'enregistrement audio</string>
+    <string name="permission">Permission refusée</string>
 </resources>

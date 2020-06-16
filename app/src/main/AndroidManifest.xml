@@ -21,8 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".Register">
-        </activity>
+        <activity android:name=".Register"></activity>
         <activity
             android:name=".VideosActivity"
             android:parentActivityName=".MultimediaMain" />
@@ -36,10 +35,8 @@
         <activity
             android:name=".AudioActivity"
             android:parentActivityName=".MultimediaMain" />
-        <activity
-            android:name=".DocumentsMain" />
-        <activity
-            android:name=".MultimediaMain" />
+        <activity android:name=".DocumentsMain" />
+        <activity android:name=".MultimediaMain" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"

@@ -57,5 +57,7 @@
     <string name="register">Registrar</string>
     <string name="full_name">Nom complet</string>
     <string name="telephone_number">Numero de telefon</string>
+    <string name="hold_button">Manteniu premut el botó previ per a l\'enregistrament d\'àudio</string>
+    <string name="permission">Permís denegat</string>
 
 </resources>

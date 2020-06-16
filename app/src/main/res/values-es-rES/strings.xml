@@ -56,5 +56,7 @@
     <string name="register">Registrar</string>
     <string name="full_name">Nombre completo</string>
     <string name="telephone_number">Número de telefono</string>
+    <string name="permission">Permiso denegado</string>
+    <string name="hold_button">Mantenga presionado el botón para grabar audio</string>
 
 </resources>

@@ -50,4 +50,6 @@
     <string name="telephone_number">Numero di telefono</string>
     <string name="register">Registrati</string>
     <string name="logout">Disconnettersi</string>
+    <string name="hold_button">Tasto di attesa premuto per la registrazione audio</string>
+    <string name="permission">Permesso negato</string>
 </resources>

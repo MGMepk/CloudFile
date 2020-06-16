@@ -62,9 +62,9 @@ public class MultimediaMain extends AppCompatActivity {
     FirebaseAuth fAuth;
     private static final String TAG = "test";
     private static String reference = "";
-    private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PICK_VIDEO_REQUEST = 2;
+    private static final int PICK_AUDIO_REQUEST = 3;
     private static final int PICK_IMAGE_CAPTURE_REQUEST = 4;
     private static final int REQUEST_VIDEO_CAPTURE = 6;
 
@@ -100,6 +100,7 @@ public class MultimediaMain extends AppCompatActivity {
         userIn = findViewById(R.id.textView);
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
+        assert user != null;
         reference = user.getUid() + "/";
         userIn.setText(user.getEmail());
 
@@ -107,7 +108,6 @@ public class MultimediaMain extends AppCompatActivity {
         ImageButton chooserAudio = findViewById(R.id.button_choose_audio);
         ImageButton chooserVideo = findViewById(R.id.button_choose_video);
         ImageButton chooserImage = findViewById(R.id.button_choose_image);
-
 
 
         // upload button
@@ -239,15 +239,14 @@ public class MultimediaMain extends AppCompatActivity {
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) |
                                 (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO))))) {
 
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, REQUEST_VIDEO_CAPTURE);
 
                 } else {
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, REQUEST_VIDEO_CAPTURE);
                 }
 
             } else {
@@ -375,13 +374,12 @@ public class MultimediaMain extends AppCompatActivity {
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
-                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_AUDIO_REQUEST);
 
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_AUDIO_REQUEST);
                 }
 
             } else {
@@ -403,15 +401,12 @@ public class MultimediaMain extends AppCompatActivity {
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
-                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
-
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE_REQUEST);
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE_REQUEST);
                 }
-
             } else {
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -424,6 +419,90 @@ public class MultimediaMain extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PICK_AUDIO_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    openAudioChooser();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case PICK_IMAGE_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    openImageChooser();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case PICK_VIDEO_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    openVideoChooser();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            case PICK_IMAGE_CAPTURE_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    makePhoto();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+
+            }
+
+            case REQUEST_VIDEO_CAPTURE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    makeVideo();
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+                return;
+
+            }
+
+            case MY_PERMISSIONS_REQUESTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && (grantResults[0] == PackageManager.PERMISSION_GRANTED) &&
+                        (grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    Toast.makeText(this, R.string.hold_button, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private void openVideoChooser() {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
@@ -431,13 +510,12 @@ public class MultimediaMain extends AppCompatActivity {
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
-                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            (this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_VIDEO_REQUEST);
 
                 } else {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS);
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_VIDEO_REQUEST);
                 }
 
             } else {
@@ -464,16 +542,15 @@ public class MultimediaMain extends AppCompatActivity {
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
                         (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)))) {
-
-                    Toast.makeText(this, R.string.request_permissions, Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                                    Manifest.permission.CAMERA}, PICK_IMAGE_CAPTURE_REQUEST);
 
                 } else {
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUESTS);
+                                    Manifest.permission.CAMERA}, PICK_IMAGE_CAPTURE_REQUEST);
+
                 }
 
             } else {

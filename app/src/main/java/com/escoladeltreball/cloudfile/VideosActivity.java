@@ -61,7 +61,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        reference = user.getUid()+"/";
+        reference = user.getUid() + "/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -93,7 +93,6 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
                 }
 
                 mAdapter.notifyDataSetChanged();
-
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
 
@@ -107,6 +106,12 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
     @Override
     public void onItemClick(int position) {
+
+
+    }
+
+    @Override
+    public void onOpenClick(int position) {
         Upload uploadCurrent = mUploads.get(position);
         String uploadUri = uploadCurrent.getUrl();
         Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(uploadUri));
@@ -117,8 +122,8 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
         String op = getString(R.string.open);
         Toast.makeText(this, op + ": " + uploadCurrent.getName(), Toast.LENGTH_SHORT).show();
-
     }
+
 
     @Override
     public void onDownloadClick(int position) {

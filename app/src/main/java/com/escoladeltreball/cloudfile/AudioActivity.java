@@ -67,7 +67,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        reference = user.getUid()+"/";
+        reference = user.getUid() + "/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
