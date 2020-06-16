@@ -58,6 +58,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
     private FirebaseUser user;
     FirebaseAuth fAuth;
     private static String reference = "";
+    int downloadable = 0;
 
 
     @Override
@@ -139,6 +140,7 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                downloadable = position;
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
 
@@ -190,6 +192,20 @@ public class AudioActivity extends AppCompatActivity implements AudioAdapter.OnI
             }
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUESTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onDownloadClick(downloadable);
+            } else {
+                // permission denied
+                // Disable the functionality that depends on this permission.
+                Toast.makeText(this, R.string.permission, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

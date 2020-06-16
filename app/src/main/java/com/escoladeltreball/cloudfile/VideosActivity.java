@@ -53,6 +53,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
     private FirebaseUser user;
     FirebaseAuth fAuth;
     private String reference = "";
+    int downloadable = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
+        assert user != null;
         reference = user.getUid() + "/";
 
         mRecyclerView = findViewById(R.id.recycler_view);
@@ -132,6 +134,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
             int permCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
             if (!(permCheck == PackageManager.PERMISSION_GRANTED)) {
+                downloadable = position;
                 //Call for permission
                 if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                     ActivityCompat.requestPermissions
@@ -185,7 +188,7 @@ public class VideosActivity extends AppCompatActivity implements VideoAdapter.On
         if (requestCode == MY_PERMISSIONS_REQUESTS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                int a = 1+1;
+                onDownloadClick(downloadable);
             } else {
                 // permission denied
                 // Disable the functionality that depends on this permission.
