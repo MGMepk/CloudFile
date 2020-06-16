@@ -168,6 +168,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Log.d("Download", e.getMessage() + " " + e.getCause());
                             Toast.makeText(ImagesActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
                     });
