@@ -81,6 +81,7 @@ public class DocumentsMain extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
+        assert user != null;
         reference = user.getUid() + "/";
 
         chooser = findViewById(R.id.button_choose_doc);
@@ -149,7 +150,7 @@ public class DocumentsMain extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PICK_DOC_REQUEST:{
                 if (grantResults.length > 0
@@ -312,6 +313,7 @@ public class DocumentsMain extends AppCompatActivity {
                         }
                         BufferedReader in = null;
                         try {
+                            assert reader != null;
                             in = new BufferedReader(reader);
                             while ((line = in.readLine()) != null) stringBuilder.append(line);
                             in.close();

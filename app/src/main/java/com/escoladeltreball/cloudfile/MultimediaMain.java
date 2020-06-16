@@ -420,7 +420,7 @@ public class MultimediaMain extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PICK_AUDIO_REQUEST: {
                 if (grantResults.length > 0
